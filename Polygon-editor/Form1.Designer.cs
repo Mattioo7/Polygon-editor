@@ -39,7 +39,7 @@
 			this.radioButton_deleteVertex = new System.Windows.Forms.RadioButton();
 			this.radioButton_moveVertex = new System.Windows.Forms.RadioButton();
 			this.radioButton_editPolygon = new System.Windows.Forms.RadioButton();
-			this.radioButton_removePolygon = new System.Windows.Forms.RadioButton();
+			this.radioButton_deletePolygon = new System.Windows.Forms.RadioButton();
 			this.radioButton_addPolygon = new System.Windows.Forms.RadioButton();
 			this.groupBox_drawMode = new System.Windows.Forms.GroupBox();
 			this.radioButton_defaultDrawing = new System.Windows.Forms.RadioButton();
@@ -92,7 +92,7 @@
 			this.groupBox_edit.Controls.Add(this.radioButton_deleteVertex);
 			this.groupBox_edit.Controls.Add(this.radioButton_moveVertex);
 			this.groupBox_edit.Controls.Add(this.radioButton_editPolygon);
-			this.groupBox_edit.Controls.Add(this.radioButton_removePolygon);
+			this.groupBox_edit.Controls.Add(this.radioButton_deletePolygon);
 			this.groupBox_edit.Controls.Add(this.radioButton_addPolygon);
 			this.groupBox_edit.Dock = System.Windows.Forms.DockStyle.Fill;
 			this.groupBox_edit.Location = new System.Drawing.Point(3, 3);
@@ -176,20 +176,20 @@
 			this.radioButton_editPolygon.AutoSize = true;
 			this.radioButton_editPolygon.Location = new System.Drawing.Point(6, 72);
 			this.radioButton_editPolygon.Name = "radioButton_editPolygon";
-			this.radioButton_editPolygon.Size = new System.Drawing.Size(92, 19);
+			this.radioButton_editPolygon.Size = new System.Drawing.Size(121, 19);
 			this.radioButton_editPolygon.TabIndex = 2;
-			this.radioButton_editPolygon.Text = "Edit polygon";
+			this.radioButton_editPolygon.Text = "(NO) Edit polygon";
 			this.radioButton_editPolygon.UseVisualStyleBackColor = true;
 			// 
-			// radioButton_removePolygon
+			// radioButton_deletePolygon
 			// 
-			this.radioButton_removePolygon.AutoSize = true;
-			this.radioButton_removePolygon.Location = new System.Drawing.Point(6, 47);
-			this.radioButton_removePolygon.Name = "radioButton_removePolygon";
-			this.radioButton_removePolygon.Size = new System.Drawing.Size(115, 19);
-			this.radioButton_removePolygon.TabIndex = 1;
-			this.radioButton_removePolygon.Text = "Remove polygon";
-			this.radioButton_removePolygon.UseVisualStyleBackColor = true;
+			this.radioButton_deletePolygon.AutoSize = true;
+			this.radioButton_deletePolygon.Location = new System.Drawing.Point(6, 47);
+			this.radioButton_deletePolygon.Name = "radioButton_deletePolygon";
+			this.radioButton_deletePolygon.Size = new System.Drawing.Size(105, 19);
+			this.radioButton_deletePolygon.TabIndex = 1;
+			this.radioButton_deletePolygon.Text = "Delete polygon";
+			this.radioButton_deletePolygon.UseVisualStyleBackColor = true;
 			// 
 			// radioButton_addPolygon
 			// 
@@ -246,6 +246,8 @@
 			this.pictureBox_workingArea.TabIndex = 2;
 			this.pictureBox_workingArea.TabStop = false;
 			this.pictureBox_workingArea.MouseDown += new System.Windows.Forms.MouseEventHandler(this.pictureBox_workingArea_MouseDown);
+			this.pictureBox_workingArea.MouseMove += new System.Windows.Forms.MouseEventHandler(this.pictureBox_workingArea_MouseMove);
+			this.pictureBox_workingArea.MouseUp += new System.Windows.Forms.MouseEventHandler(this.pictureBox_workingArea_MouseUp);
 			// 
 			// Form1
 			// 
@@ -270,7 +272,7 @@
 
 		private TableLayoutPanel tableLayoutPanel_main;
 		private GroupBox groupBox_edit;
-		private RadioButton radioButton_removePolygon;
+		private RadioButton radioButton_deletePolygon;
 		private RadioButton radioButton_addPolygon;
 		private RadioButton radioButton_editPolygon;
 		private TableLayoutPanel tableLayoutPanel_right;

@@ -10,12 +10,17 @@ namespace Polygon_editor
 		private Pen pen;
 		private int numberOfVerticesInNewPolygon;
 		private List<Polygon> polygons;
-		private int RADIUS = 6;
+		private const int RADIUS = 6;
+		private bool mouseDown;
+		private Vertex? pressedVertex;
+		private Polygon? pressedPolygon;
+		private Point mousePosition;
 
 		public Form1()
 		{
 			InitializeComponent();
 
+			// zrobiæ funkcjê wyczyœæ wszystkie zmienne
 			drawArea = new Bitmap(this.pictureBox_workingArea.Size.Width, this.pictureBox_workingArea.Size.Height);
 			this.pictureBox_workingArea.Image = drawArea;
 			using (Graphics g = Graphics.FromImage(drawArea))
@@ -27,6 +32,9 @@ namespace Polygon_editor
 
 			numberOfVerticesInNewPolygon = 0;
 			polygons = new List<Polygon>();
+			mouseDown = false;
+			pressedVertex = null;
+			pressedPolygon = null;
 		}
 
 		private void pictureBox_workingArea_MouseDown(object sender, MouseEventArgs e)
@@ -35,12 +43,31 @@ namespace Polygon_editor
 			{
 				addPolygon(e);
 			}
-			else if (this.radioButton_removePolygon.Checked)
+			else if (this.radioButton_deletePolygon.Checked)
 			{
-				removePolygon(e);
+				deletePolygon(e);
 			}
+			else if (this.radioButton_moveVertex.Checked)
+			{
+				moveVertex(e);
+			}
+			else if (this.radioButton_deleteVertex.Checked)
+			{
+				deleteVertex(e);
+			}
+			else if (this.radioButton_edgeVertex.Checked)
+			{
+				addVertexOnTheEdge(e);
+			}
+			else if (this.radioButton_movePolygon.Checked)
+			{
+				movePolygon(e);
+			}
+		}
 
-
+		private void pictureBox_workingArea_MouseUp(object sender, MouseEventArgs e)
+		{
+			mouseDown = false;	
 		}
 
 		private void addPolygon(MouseEventArgs e)
@@ -117,7 +144,7 @@ namespace Polygon_editor
 			this.pictureBox_workingArea.Refresh();
 		}
 
-		private void removePolygon(MouseEventArgs e)
+		private void deletePolygon(MouseEventArgs e)
 		{
 			// na razie trzeba klikn¹æ na wierzcho³ek
 
@@ -142,7 +169,62 @@ namespace Polygon_editor
 				this.polygons.Remove(polyToRemove);
 			}
 
-			reDraw();
+			reDraw();	// nie przesadzaæ z tymi reDraw()
+		}
+
+		private void deletePolygon(Polygon poly)
+		{
+			this.polygons.Remove(poly);
+		}
+
+		private void moveVertex(MouseEventArgs e)
+		{
+			pressedVertex = findVertex(e);
+			mouseDown = true;
+		}
+
+		private void deleteVertex(MouseEventArgs e)
+		{
+			Vertex? vertex = findVertex(e);
+
+			if (vertex != null)
+			{
+				foreach (Polygon poly in this.polygons)
+				{
+					if (poly.vertices.Contains(vertex))
+					{
+						poly.vertices.Remove(vertex);
+
+						if (poly.vertices.Count <= 2)
+						{
+							deletePolygon(poly);
+						}
+
+						break;
+					}
+				}
+				reDraw();
+			}
+		}
+
+		private void addVertexOnTheEdge(MouseEventArgs e)
+		{
+			// czy klikna³em w krawêdŸ - prosta pomiêdzy dwoma kolejnymi wierzcho³kami oraz czy pomiêdzy nimi?
+
+			// przyda siê findEdge
+		}
+
+		private void movePolygon(MouseEventArgs e)
+		{
+			pressedVertex = findVertex(e);
+			pressedPolygon = findPolygonByVertex(e);
+
+			if (this.radioButton_movePolygon.Checked && pressedPolygon != null)
+			{
+				mouseDown = true;
+				mousePosition.X = e.X;
+				mousePosition.Y = e.Y;
+			}
 		}
 
 		private void PutLine(Point a, Point b, Graphics e, Brush br)
@@ -238,6 +320,96 @@ namespace Polygon_editor
 			this.pictureBox_workingArea.Refresh();
 		}
 
-		// przyda siê metoda do zrobienia redraw ca³oœci
+		private void pictureBox_workingArea_MouseMove(object sender, MouseEventArgs e)
+		{
+			// jeœli mouseDown oraz wybrany jest VertexMove to poruszamy wierzcho³kiem, któy jest klikniêty
+			if (this.radioButton_moveVertex.Checked && mouseDown == true && pressedVertex != null)
+			{
+				pressedVertex.p.X = e.X;
+				pressedVertex.p.Y = e.Y;
+				reDraw();
+			}
+			else if (this.radioButton_movePolygon.Checked && mouseDown == true && pressedPolygon != null)
+			{
+				this.label1.Text = "Ruszamy";
+
+				foreach (Vertex v in pressedPolygon.vertices)
+				{
+					v.p.X += e.X - mousePosition.X;
+					v.p.Y += e.Y - mousePosition.Y;
+
+				}
+				
+				mousePosition.X = e.X;
+				mousePosition.Y = e.Y;
+				
+				reDraw();
+
+				this.label1.Text = "Stop";
+			}
+			else if (mouseDown == true)
+			{
+				return;
+			}
+		}
+
+		private Polygon? findPolygonByVertex(MouseEventArgs e)
+		{
+			Polygon? polygon = null;
+
+			foreach (Polygon poly in this.polygons)
+			{
+				if (polygon != null)
+				{
+					break;
+				}
+
+				foreach (Vertex v in poly.vertices)
+				{
+					int yDiff = Math.Abs(v.p.Y - e.Y);
+					int xDiff = Math.Abs(v.p.X - e.X);
+
+					if (yDiff * yDiff + xDiff * xDiff < 4 * (RADIUS + 1) * (RADIUS + 1))
+					{
+						polygon = poly;
+						break;
+					}
+				}
+			}
+
+			return polygon;
+		}
+
+		private Vertex? findVertex(MouseEventArgs e)
+		{
+			Vertex? foundVertex = null;
+
+			foreach (Polygon poly in this.polygons)
+			{
+				if (foundVertex != null)
+				{
+					break;
+				}
+
+				foreach (Vertex v in poly.vertices)
+				{
+					int yDiff = Math.Abs(v.p.Y - e.Y);
+					int xDiff = Math.Abs(v.p.X - e.X);
+
+					if (yDiff * yDiff + xDiff * xDiff < 4 * (RADIUS + 1) * (RADIUS + 1))
+					{
+						foundVertex = v;
+						break;
+					}
+				}
+			}
+
+			return foundVertex;
+		}
+
+		private (Vertex?, Vertex?) findEdge(MouseEventArgs e)
+		{
+			return (null, null);
+		}
 	}
 }
