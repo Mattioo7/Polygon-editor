@@ -1,4 +1,5 @@
 using System.Drawing;
+using System.Linq;
 using System.Windows.Forms.VisualStyles;
 using static Polygon_editor.EditRadioButton;
 
@@ -24,7 +25,7 @@ namespace Polygon_editor
 				g.Clear(Color.AliceBlue);
 			}
 
-			pen = new Pen(Color.Black, 3);
+			pen = new Pen(Color.Black, 1);
 
 			radioButtonEdit = EditRadioButtonEnum.ADD_POLYGON;
 			this.label1.Text = EditRadioButtonEnum.ADD_POLYGON.ToString();
@@ -34,7 +35,7 @@ namespace Polygon_editor
 
 		private void pictureBox_workingArea_MouseDown(object sender, MouseEventArgs e)
 		{
-			if (radioButtonEdit == EditRadioButtonEnum.ADD_POLYGON)
+			if (this.radioButton_addPolygon.Checked)
 			{
 				// klikam i sprawdzam czy to pierwszy
 
@@ -72,7 +73,7 @@ namespace Polygon_editor
 						numberOfVerticesInNewPolygon = 0;
 						using (Graphics g = Graphics.FromImage(this.drawArea))
 						{
-							DrawLine(polygons.Last().vertices.Last().p, polygons.Last().vertices[0].p, g, Brushes.Black);
+							PutLine(polygons.Last().vertices.Last().p, polygons.Last().vertices[0].p, g, Brushes.Black);
 						}
 					}
 					else
@@ -98,7 +99,7 @@ namespace Polygon_editor
 								numberOfVerticesInNewPolygon++;
 								polygons.Last().vertices.Add(new Vertex(new Point(e.X, e.Y)));
 								g.FillEllipse(Brushes.Black, e.X - RADIUS + 2, e.Y - RADIUS + 2, (RADIUS - 2) * 2, (RADIUS - 2) * 2);
-								DrawLine(polygons.Last().vertices.Last().p, polygons.Last().vertices[polygons.Last().vertices.Count - 2].p, g, Brushes.Black);
+								PutLine(polygons.Last().vertices.Last().p, polygons.Last().vertices[polygons.Last().vertices.Count - 2].p, g, Brushes.Black);
 							}
 						}
 
@@ -111,6 +112,8 @@ namespace Polygon_editor
 
 		}
 
+
+		// usunac wszystkie ponizsze i uzyc isChecked
 		private void radioButton_addPolygon_CheckedChanged(object sender, EventArgs e)
 		{
 			radioButtonEdit = EditRadioButtonEnum.ADD_POLYGON;
@@ -159,7 +162,7 @@ namespace Polygon_editor
 		}
 
 
-		private void DrawLine(Point a, Point b, Graphics e, Brush br)
+		private void PutLine(Point a, Point b, Graphics e, Brush br)
 		{
 			if (this.radioButton_bresenham.Checked)
 			{
@@ -223,7 +226,33 @@ namespace Polygon_editor
 			e.FillRectangle(b, x, y, 1, 1);
 		}
 
+		private void reDraw()
+		{
+			using (Graphics g = Graphics.FromImage(this.drawArea))
+			{
+				foreach (Polygon poly in this.polygons)
+				{
+					for (int i = 0; i < poly.vertices.Count; ++i)
+					{
+						PutLine(poly.vertices[i].p, poly.vertices[(poly.vertices.Count + i - 1) % poly.vertices.Count].p, g, Brushes.Black);
+						g.FillEllipse(Brushes.Black, poly.vertices[i].p.X - RADIUS + 2, poly.vertices[i].p.Y - RADIUS + 2, (RADIUS - 2) * 2, (RADIUS - 2) * 2);
+					}
+				}
+			}
+			this.pictureBox_workingArea.Refresh();
+		}
 
+		private void button_clear_Click(object sender, EventArgs e)
+		{
+			numberOfVerticesInNewPolygon = 0;
+			polygons.Clear();
+
+			using (Graphics g = Graphics.FromImage(this.drawArea))
+			{
+				g.Clear(Color.AliceBlue);
+			}
+			this.pictureBox_workingArea.Refresh();
+		}
 
 		// przyda siê metoda do zrobienia redraw ca³oœci
 	}

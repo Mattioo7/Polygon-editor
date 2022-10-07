@@ -44,6 +44,7 @@
 			this.radioButton_defaultDrawing = new System.Windows.Forms.RadioButton();
 			this.radioButton_bresenham = new System.Windows.Forms.RadioButton();
 			this.pictureBox_workingArea = new System.Windows.Forms.PictureBox();
+			this.button_clear = new System.Windows.Forms.Button();
 			this.tableLayoutPanel_main.SuspendLayout();
 			this.tableLayoutPanel_right.SuspendLayout();
 			this.groupBox_edit.SuspendLayout();
@@ -83,6 +84,7 @@
 			// 
 			// groupBox_edit
 			// 
+			this.groupBox_edit.Controls.Add(this.button_clear);
 			this.groupBox_edit.Controls.Add(this.label1);
 			this.groupBox_edit.Controls.Add(this.radioButton_movePolygon);
 			this.groupBox_edit.Controls.Add(this.radioButton_moveEdge);
@@ -243,6 +245,16 @@
 			this.pictureBox_workingArea.TabStop = false;
 			this.pictureBox_workingArea.MouseDown += new System.Windows.Forms.MouseEventHandler(this.pictureBox_workingArea_MouseDown);
 			// 
+			// button_clear
+			// 
+			this.button_clear.Location = new System.Drawing.Point(6, 298);
+			this.button_clear.Name = "button_clear";
+			this.button_clear.Size = new System.Drawing.Size(75, 23);
+			this.button_clear.TabIndex = 9;
+			this.button_clear.Text = "Clear";
+			this.button_clear.UseVisualStyleBackColor = true;
+			this.button_clear.Click += new System.EventHandler(this.button_clear_Click);
+			// 
 			// Form1
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
@@ -280,5 +292,6 @@
 		private RadioButton radioButton_bresenham;
 		private PictureBox pictureBox_workingArea;
 		private Label label1;
+		private Button button_clear;
 	}
 }
