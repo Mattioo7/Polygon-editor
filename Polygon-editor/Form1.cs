@@ -1,7 +1,6 @@
 using System.Drawing;
 using System.Linq;
 using System.Windows.Forms.VisualStyles;
-using static Polygon_editor.EditRadioButton;
 
 namespace Polygon_editor
 {
@@ -9,7 +8,6 @@ namespace Polygon_editor
 	{
 		private Bitmap drawArea;
 		private Pen pen;
-		private EditRadioButtonEnum radioButtonEdit;
 		private int numberOfVerticesInNewPolygon;
 		private List<Polygon> polygons;
 		private int RADIUS = 6;
@@ -27,8 +25,6 @@ namespace Polygon_editor
 
 			pen = new Pen(Color.Black, 1);
 
-			radioButtonEdit = EditRadioButtonEnum.ADD_POLYGON;
-			this.label1.Text = EditRadioButtonEnum.ADD_POLYGON.ToString();
 			numberOfVerticesInNewPolygon = 0;
 			polygons = new List<Polygon>();
 		}
@@ -37,130 +33,117 @@ namespace Polygon_editor
 		{
 			if (this.radioButton_addPolygon.Checked)
 			{
-				// klikam i sprawdzam czy to pierwszy
-
-				// pierwszy
-					// dodaje wierzcho³ek
-
-				// kolejny
-					// sprawdzam czy klikam na pierwszy
-						// zamykam
-					// inny ni¿ pierwszy 
-						// nie dodaje
-					// zaden 
-						// dodaje
-
-
-				if (numberOfVerticesInNewPolygon == 0)
-				{
-					polygons.Add(new Polygon());
-					polygons.Last().vertices.Add(new Vertex(new Point(e.X, e.Y)));
-					numberOfVerticesInNewPolygon++;
-
-					using (Graphics g = Graphics.FromImage(this.drawArea))
-					{
-						g.FillEllipse(Brushes.Black, e.X - RADIUS + 2, e.Y - RADIUS + 2, (RADIUS - 2) * 2, (RADIUS - 2) * 2);
-					}
-				}
-				else
-				{
-					int yDiff_withFirst = Math.Abs(polygons.Last().vertices[0].p.Y - e.Y);
-					int xDiff_withFirst = Math.Abs(polygons.Last().vertices[0].p.X - e.X);
-
-					if (yDiff_withFirst * yDiff_withFirst + xDiff_withFirst * xDiff_withFirst < 4 * (RADIUS + 1) * (RADIUS + 1))
-					{
-						// jesli klikam na pierwszy to domykam
-						numberOfVerticesInNewPolygon = 0;
-						using (Graphics g = Graphics.FromImage(this.drawArea))
-						{
-							PutLine(polygons.Last().vertices.Last().p, polygons.Last().vertices[0].p, g, Brushes.Black);
-						}
-					}
-					else
-					{
-						bool flag_iClickOnOtherVert = false;
-
-						foreach (var v in polygons.Last().vertices)
-						{
-							int yDiff = Math.Abs(v.p.Y - e.Y);
-							int xDiff = Math.Abs(v.p.X - e.X);
-
-							if (yDiff * yDiff + xDiff * xDiff < 4 * (RADIUS + 1) * (RADIUS + 1))
-							{
-								flag_iClickOnOtherVert = true;
-								break;
-							}
-						}
-
-						if (flag_iClickOnOtherVert == false)
-						{
-							using (Graphics g = Graphics.FromImage(this.drawArea))
-							{
-								numberOfVerticesInNewPolygon++;
-								polygons.Last().vertices.Add(new Vertex(new Point(e.X, e.Y)));
-								g.FillEllipse(Brushes.Black, e.X - RADIUS + 2, e.Y - RADIUS + 2, (RADIUS - 2) * 2, (RADIUS - 2) * 2);
-								PutLine(polygons.Last().vertices.Last().p, polygons.Last().vertices[polygons.Last().vertices.Count - 2].p, g, Brushes.Black);
-							}
-						}
-
-					}
-
-				}
-				this.pictureBox_workingArea.Refresh();
+				addPolygon(e);
+			}
+			else if (this.radioButton_removePolygon.Checked)
+			{
+				removePolygon(e);
 			}
 
 
 		}
 
-
-		// usunac wszystkie ponizsze i uzyc isChecked
-		private void radioButton_addPolygon_CheckedChanged(object sender, EventArgs e)
+		private void addPolygon(MouseEventArgs e)
 		{
-			radioButtonEdit = EditRadioButtonEnum.ADD_POLYGON;
-			this.label1.Text = EditRadioButtonEnum.ADD_POLYGON.ToString();
+			// klikam i sprawdzam czy to pierwszy
+
+			// pierwszy
+				// dodaje wierzcho³ek
+
+			// kolejny
+				// sprawdzam czy klikam na pierwszy
+					// zamykam
+				// inny ni¿ pierwszy 
+					// nie dodaje
+				// zaden 
+					// dodaje
+
+
+			if (numberOfVerticesInNewPolygon == 0)
+			{
+				polygons.Add(new Polygon());
+				polygons.Last().vertices.Add(new Vertex(new Point(e.X, e.Y)));
+				numberOfVerticesInNewPolygon++;
+
+				using (Graphics g = Graphics.FromImage(this.drawArea))
+				{
+					g.FillEllipse(Brushes.Black, e.X - RADIUS + 2, e.Y - RADIUS + 2, (RADIUS - 2) * 2, (RADIUS - 2) * 2);
+				}
+			}
+			else
+			{
+				int yDiff_withFirst = Math.Abs(polygons.Last().vertices[0].p.Y - e.Y);
+				int xDiff_withFirst = Math.Abs(polygons.Last().vertices[0].p.X - e.X);
+
+				if (yDiff_withFirst * yDiff_withFirst + xDiff_withFirst * xDiff_withFirst < 4 * (RADIUS + 1) * (RADIUS + 1))
+				{
+					// jesli klikam na pierwszy to domykam
+					numberOfVerticesInNewPolygon = 0;
+					using (Graphics g = Graphics.FromImage(this.drawArea))
+					{
+						PutLine(polygons.Last().vertices.Last().p, polygons.Last().vertices[0].p, g, Brushes.Black);
+					}
+				}
+				else
+				{
+					bool flag_iClickOnOtherVert = false;
+
+					foreach (var v in polygons.Last().vertices)
+					{
+						int yDiff = Math.Abs(v.p.Y - e.Y);
+						int xDiff = Math.Abs(v.p.X - e.X);
+
+						if (yDiff * yDiff + xDiff * xDiff < 4 * (RADIUS + 1) * (RADIUS + 1))
+						{
+							flag_iClickOnOtherVert = true;
+							break;
+						}
+					}
+
+					if (flag_iClickOnOtherVert == false)
+					{
+						using (Graphics g = Graphics.FromImage(this.drawArea))
+						{
+							numberOfVerticesInNewPolygon++;
+							polygons.Last().vertices.Add(new Vertex(new Point(e.X, e.Y)));
+							g.FillEllipse(Brushes.Black, e.X - RADIUS + 2, e.Y - RADIUS + 2, (RADIUS - 2) * 2, (RADIUS - 2) * 2);
+							PutLine(polygons.Last().vertices.Last().p, polygons.Last().vertices[polygons.Last().vertices.Count - 2].p, g, Brushes.Black);
+						}
+					}
+
+				}
+
+			}
+			this.pictureBox_workingArea.Refresh();
 		}
 
-		private void radioButton_removePolygon_CheckedChanged(object sender, EventArgs e)
+		private void removePolygon(MouseEventArgs e)
 		{
-			radioButtonEdit = EditRadioButtonEnum.REMOVE_POLYGON;
-			this.label1.Text = EditRadioButtonEnum.REMOVE_POLYGON.ToString();
-		}
+			// na razie trzeba klikn¹æ na wierzcho³ek
 
-		private void radioButton_editPolygon_CheckedChanged(object sender, EventArgs e)
-		{
-			radioButtonEdit = EditRadioButtonEnum.EDIT_POLYGON;
-			this.label1.Text = EditRadioButtonEnum.EDIT_POLYGON.ToString();
-		}
+			Polygon? polyToRemove = null;
 
-		private void radioButton_moveVertex_CheckedChanged(object sender, EventArgs e)
-		{
-			radioButtonEdit = EditRadioButtonEnum.MOVE_VERTEX;
-			this.label1.Text = EditRadioButtonEnum.MOVE_VERTEX.ToString();
-		}
-		private void radioButton_deleteVertex_CheckedChanged(object sender, EventArgs e)
-		{
-			radioButtonEdit = EditRadioButtonEnum.DELETE_VERTEX;
-			this.label1.Text = EditRadioButtonEnum.DELETE_VERTEX.ToString();
-		}
+			foreach (Polygon poly in this.polygons)
+			{
+				foreach (Vertex v in poly.vertices)
+				{
+					int yDiff = Math.Abs(v.p.Y - e.Y);
+					int xDiff = Math.Abs(v.p.X - e.X);
 
-		private void radioButton_edgeVertex_CheckedChanged(object sender, EventArgs e)
-		{
-			radioButtonEdit = EditRadioButtonEnum.EDGE_VERTEX;
-			this.label1.Text = EditRadioButtonEnum.EDGE_VERTEX.ToString();
-		}
+					if (yDiff * yDiff + xDiff * xDiff < 4 * (RADIUS + 1) * (RADIUS + 1))
+					{
+						polyToRemove = poly;
+					}
+				}
+			}
 
-		private void radioButton_moveEdge_CheckedChanged(object sender, EventArgs e)
-		{
-			radioButtonEdit = EditRadioButtonEnum.MOVE_EDGE;
-			this.label1.Text = EditRadioButtonEnum.MOVE_EDGE.ToString();
-		}
+			if (polyToRemove != null)
+			{
+				this.polygons.Remove(polyToRemove);
+			}
 
-		private void radioButton_movePolygon_CheckedChanged(object sender, EventArgs e)
-		{
-			radioButtonEdit = EditRadioButtonEnum.MOVE_POLYGON;
-			this.label1.Text = EditRadioButtonEnum.MOVE_POLYGON.ToString();
+			reDraw();
 		}
-
 
 		private void PutLine(Point a, Point b, Graphics e, Brush br)
 		{
@@ -230,6 +213,7 @@ namespace Polygon_editor
 		{
 			using (Graphics g = Graphics.FromImage(this.drawArea))
 			{
+				g.Clear(Color.AliceBlue);
 				foreach (Polygon poly in this.polygons)
 				{
 					for (int i = 0; i < poly.vertices.Count; ++i)
