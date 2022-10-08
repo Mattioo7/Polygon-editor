@@ -10,6 +10,7 @@ namespace Polygon_editor
 		private Pen pen;
 		private int numberOfVerticesInNewPolygon;
 		private List<Polygon> polygons;
+		private List<Constraint> constraints;
 		private const int RADIUS = 6;
 		private bool mouseDown;
 		private Vertex? pressedVertex;
@@ -260,7 +261,7 @@ namespace Polygon_editor
 		private void movePolygon(MouseEventArgs e)
 		{
 			pressedVertex = findVertex(e);
-			pressedPolygon = findPolygonByVertex(e);
+			pressedPolygon = findPolygonByMouse(e);
 
 			if (this.radioButton_movePolygon.Checked && pressedPolygon != null)
 			{
@@ -275,25 +276,12 @@ namespace Polygon_editor
 			(int? a, int? b, Polygon? poly) edge = findEdge(e);
 			
 
-			if (this.radioButton_movePolygon.Checked && pressedPolygon != null)
-			{
-				mouseDown = true;
-				mousePosition.X = e.X;
-				mousePosition.Y = e.Y;
-			}
+			
 		}
 
 		private void parallel(MouseEventArgs e)
 		{
-			pressedVertex = findVertex(e);
-			pressedPolygon = findPolygonByVertex(e);
-
-			if (this.radioButton_movePolygon.Checked && pressedPolygon != null)
-			{
-				mouseDown = true;
-				mousePosition.X = e.X;
-				mousePosition.Y = e.Y;
-			}
+			
 		}
 
 		private void PutLine(Point a, Point b, Graphics e, Brush br)
@@ -396,6 +384,35 @@ namespace Polygon_editor
 			{
 				pressedVertex.p.X = e.X;
 				pressedVertex.p.Y = e.Y;
+
+				// mam wybrany wierzcho³ek, muszê sprawdziæ jego dwie krawêdzie czy maj¹ constaint
+				(Polygon? poly, int index) = findPolygonByVertex(pressedVertex);
+
+				if (poly != null)
+				{
+					Vertex prev = poly.vertices[(poly.vertices.Count + index - 1) % poly.vertices.Count];
+					Vertex curr = poly.vertices[index];
+					Vertex next = poly.vertices[(poly.vertices.Count + index + 1) % poly.vertices.Count];
+
+					(Constraint? constraint1, int edge1) = doesEdgeHasConstraint(prev, curr);
+					(Constraint? constraint2, int edge2) = doesEdgeHasConstraint(next, curr);
+
+					if (constraint1 != null)
+					{
+						if (edge1 == 1)
+						{
+							if (!constraint1.isValid())
+							{
+								constraint1.fix(1);
+							}
+						}
+						else
+						{
+
+						}
+					}
+				}
+
 				reDraw();
 			}
 			else if (this.radioButton_movePolygon.Checked && mouseDown == true && pressedPolygon != null)
@@ -404,7 +421,6 @@ namespace Polygon_editor
 				{
 					v.p.X += e.X - mousePosition.X;
 					v.p.Y += e.Y - mousePosition.Y;
-
 				}
 				
 				mousePosition.X = e.X;
@@ -426,7 +442,33 @@ namespace Polygon_editor
 			}
 		}
 
-		private Polygon? findPolygonByVertex(MouseEventArgs e)
+		private (Polygon?, int) findPolygonByVertex(Vertex vert)
+		{
+			Polygon? polygon = null;
+			int index = -1;
+
+			foreach (Polygon poly in this.polygons)
+			{
+				if (polygon != null)
+				{
+					break;
+				}
+
+				for (int i = 0; i < poly.vertices.Count; ++i)
+				{
+					if (poly.vertices[i] == vert)
+					{
+						polygon = poly;
+						index = i;
+						break;
+					}
+				}
+			}
+
+			return (polygon, index);
+		}
+
+		private Polygon? findPolygonByMouse(MouseEventArgs e)
 		{
 			Polygon? polygon = null;
 
@@ -520,6 +562,23 @@ namespace Polygon_editor
 				numberOfVerticesInNewPolygon = 0;
 				reDraw();
 			}
+		}
+
+		private (Constraint?, int) doesEdgeHasConstraint(Vertex a, Vertex b)
+		{
+			foreach (Constraint constraint in constraints)
+			{
+				if ((a == constraint.a && b == constraint.b) || (b == constraint.a && a == constraint.b))
+				{
+					return (constraint, 1); 
+				}
+				else if ((a == constraint.c && b == constraint.d) || (b == constraint.c && a == constraint.d))
+				{
+					return (constraint, 2); 
+				}
+			}
+
+			return (null, -1);
 		}
 	}
 }
