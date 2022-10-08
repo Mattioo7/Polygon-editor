@@ -13,6 +13,8 @@ namespace Polygon_editor
 		private const int RADIUS = 6;
 		private bool mouseDown;
 		private Vertex? pressedVertex;
+		private (Vertex?, Vertex?) pressedEdge;
+		private (Vertex?, Vertex?, Polygon?)[] parallelEdges;
 		private Polygon? pressedPolygon;
 		private Point mousePosition;
 
@@ -35,6 +37,8 @@ namespace Polygon_editor
 			mouseDown = false;
 			pressedVertex = null;
 			pressedPolygon = null;
+
+			parallelEdges = new (Vertex?, Vertex?, Polygon?)[2];
 		}
 
 		private void pictureBox_workingArea_MouseDown(object sender, MouseEventArgs e)
@@ -59,10 +63,23 @@ namespace Polygon_editor
 			{
 				addVertexOnTheEdge(e);
 			}
+			else if (this.radioButton_moveEdge.Checked)
+			{
+				moveEdge(e);
+			}
 			else if (this.radioButton_movePolygon.Checked)
 			{
 				movePolygon(e);
 			}
+			else if (this.radioButton_sameLength.Checked)
+			{
+				sameLength(e);
+			}
+			else if (this.radioButton_parallel.Checked)
+			{
+				parallel(e);
+			}
+			
 		}
 
 		private void pictureBox_workingArea_MouseUp(object sender, MouseEventArgs e)
@@ -209,12 +226,64 @@ namespace Polygon_editor
 
 		private void addVertexOnTheEdge(MouseEventArgs e)
 		{
-			// czy klikna³em w krawêdŸ - prosta pomiêdzy dwoma kolejnymi wierzcho³kami oraz czy pomiêdzy nimi?
+			(int? a, int? b, Polygon? poly) edge = findEdge(e);
 
-			// przyda siê findEdge
+			if (edge != (null, null, null))
+			{
+				this.label1.Text = "EDGE!";
+
+				Vertex newVertex = new Vertex(new Point(e.X, e.Y));
+				edge.poly.vertices.Insert((int)edge.b, newVertex);
+				reDraw();
+			}
+			else
+			{
+				this.label1.Text = "MISS!";
+			}
+
+		}
+
+		private void moveEdge(MouseEventArgs e)
+		{
+			(int? a, int? b, Polygon? poly) edge = findEdge(e);
+
+			if (edge != (null, null, null))
+			{
+				pressedEdge = (edge.poly.vertices[(int)edge.a], edge.poly.vertices[(int)edge.b]);
+
+				mouseDown = true;
+				mousePosition.X = e.X;
+				mousePosition.Y = e.Y;
+			}
 		}
 
 		private void movePolygon(MouseEventArgs e)
+		{
+			pressedVertex = findVertex(e);
+			pressedPolygon = findPolygonByVertex(e);
+
+			if (this.radioButton_movePolygon.Checked && pressedPolygon != null)
+			{
+				mouseDown = true;
+				mousePosition.X = e.X;
+				mousePosition.Y = e.Y;
+			}
+		}
+
+		private void sameLength(MouseEventArgs e)
+		{
+			(int? a, int? b, Polygon? poly) edge = findEdge(e);
+			
+
+			if (this.radioButton_movePolygon.Checked && pressedPolygon != null)
+			{
+				mouseDown = true;
+				mousePosition.X = e.X;
+				mousePosition.Y = e.Y;
+			}
+		}
+
+		private void parallel(MouseEventArgs e)
 		{
 			pressedVertex = findVertex(e);
 			pressedPolygon = findPolygonByVertex(e);
@@ -331,8 +400,6 @@ namespace Polygon_editor
 			}
 			else if (this.radioButton_movePolygon.Checked && mouseDown == true && pressedPolygon != null)
 			{
-				this.label1.Text = "Ruszamy";
-
 				foreach (Vertex v in pressedPolygon.vertices)
 				{
 					v.p.X += e.X - mousePosition.X;
@@ -344,12 +411,18 @@ namespace Polygon_editor
 				mousePosition.Y = e.Y;
 				
 				reDraw();
-
-				this.label1.Text = "Stop";
 			}
-			else if (mouseDown == true)
+			else if (this.radioButton_moveEdge.Checked && mouseDown == true && pressedEdge != (null, null))
 			{
-				return;
+				pressedEdge.Item1.p.X += e.X - mousePosition.X;
+				pressedEdge.Item1.p.Y += e.Y - mousePosition.Y;
+				pressedEdge.Item2.p.X += e.X - mousePosition.X;
+				pressedEdge.Item2.p.Y += e.Y - mousePosition.Y;
+
+				mousePosition.X = e.X;
+				mousePosition.Y = e.Y;
+
+				reDraw();
 			}
 		}
 
@@ -407,9 +480,46 @@ namespace Polygon_editor
 			return foundVertex;
 		}
 
-		private (Vertex?, Vertex?) findEdge(MouseEventArgs e)
+		private (int?, int?, Polygon?) findEdge(MouseEventArgs e)
 		{
-			return (null, null);
+			(int?, int?, Polygon?) edge = (null, null, null);
+
+
+			foreach (Polygon poly in this.polygons)
+			{
+				if (edge != (null, null, null))
+				{
+					break;
+				}
+
+				for (int i = 0; i < poly.vertices.Count; ++i)
+				{
+					Vertex prev = poly.vertices[(poly.vertices.Count + i - 1) % poly.vertices.Count];
+					Vertex next = poly.vertices[i];
+
+					double AB = Math.Sqrt(Math.Pow(prev.p.X - next.p.X, 2) + Math.Pow(prev.p.Y - next.p.Y, 2));
+					double AP = Math.Sqrt(Math.Pow(prev.p.X - e.X, 2) + Math.Pow(prev.p.Y - e.Y, 2));
+					double PB = Math.Sqrt(Math.Pow(next.p.X - e.X, 2) + Math.Pow(next.p.Y - e.Y, 2));
+
+					if (AP == 0 || PB == 0 || (AP + PB) < (AB + 0.5) )
+					{
+						edge = ((poly.vertices.Count + i - 1) % poly.vertices.Count, i, poly);
+						break;
+					}
+				}
+			}
+
+			return edge;
+		}
+
+		private void radioButton_addPolygon_CheckedChanged(object sender, EventArgs e)
+		{
+			if (!radioButton_addPolygon.Checked && numberOfVerticesInNewPolygon != 0)
+			{
+				deletePolygon(polygons.Last());
+				numberOfVerticesInNewPolygon = 0;
+				reDraw();
+			}
 		}
 	}
 }
