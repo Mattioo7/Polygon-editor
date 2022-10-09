@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
 using System.Windows.Forms.VisualStyles;
@@ -10,7 +11,8 @@ namespace Polygon_editor
 		private Pen pen;
 		private int numberOfVerticesInNewPolygon;
 		private List<Polygon> polygons;
-		private List<Constraint> constraints;
+		private List<Parallel> parallelConstraints;
+		private List<SameLenght> sameLenghtConstraints;
 		private const int RADIUS = 6;
 		private bool mouseDown;
 		private Vertex? pressedVertex;
@@ -35,7 +37,8 @@ namespace Polygon_editor
 
 			numberOfVerticesInNewPolygon = 0;
 			polygons = new List<Polygon>();
-			constraints = new List<Constraint>();
+			parallelConstraints = new List<Parallel>();
+			sameLenghtConstraints = new List<SameLenght>();
 			mouseDown = false;
 			pressedVertex = null;
 			pressedPolygon = null;
@@ -47,38 +50,47 @@ namespace Polygon_editor
 		{
 			if (this.radioButton_addPolygon.Checked)
 			{
+				this.label1.Text = "add polygon";
 				addPolygon(e);
 			}
 			else if (this.radioButton_deletePolygon.Checked)
 			{
+				this.label1.Text = "delete polygon";
 				deletePolygon(e);
 			}
 			else if (this.radioButton_moveVertex.Checked)
 			{
+				this.label1.Text = "move vertex";
 				moveVertex(e);
 			}
 			else if (this.radioButton_deleteVertex.Checked)
 			{
+				this.label1.Text = "delete vertex";
 				deleteVertex(e);
 			}
 			else if (this.radioButton_edgeVertex.Checked)
 			{
+				this.label1.Text = "edge vertex";
 				addVertexOnTheEdge(e);
 			}
 			else if (this.radioButton_moveEdge.Checked)
 			{
+				this.label1.Text = "move edge";
 				moveEdge(e);
 			}
 			else if (this.radioButton_movePolygon.Checked)
 			{
+				this.label1.Text = "move polygon";
 				movePolygon(e);
 			}
 			else if (this.radioButton_sameLength.Checked)
 			{
+				this.label1.Text = "same length";
 				sameLength(e);
 			}
 			else if (this.radioButton_parallel.Checked)
 			{
+				this.label1.Text = "parallel";
 				parallel(e);
 			}
 			
@@ -200,6 +212,9 @@ namespace Polygon_editor
 		{
 			pressedVertex = findVertex(e);
 			mouseDown = true;
+
+			mousePosition.X = e.X;
+			mousePosition.Y = e.Y;
 		}
 
 		private void deleteVertex(MouseEventArgs e)
@@ -274,9 +289,21 @@ namespace Polygon_editor
 
 		private void sameLength(MouseEventArgs e)
 		{
-			
+			// jeœli jest zabkolowana d³ugoœæ to poruszamy oboma wierzcho³kami w trakcie moveVertex oraz moveEdge równie¿
+			// potrzebujê iteracji po wierzcho³kach danego wielok¹ta
 
+			(int? a, int? b, Polygon? poly) edge = findEdge(e);
 
+			if (edge != (null, null, null))
+			{
+				Vertex a = edge.poly.vertices[(int)edge.a];
+				Vertex b = edge.poly.vertices[(int)edge.b];
+
+				pressedEdge = (a,b);
+
+				sameLenghtConstraints.Add(new SameLenght(a, b));
+				this.label1.Text = "sameLen for: " + a.ToString() + " " + b.ToString();
+			}
 
 		}
 
@@ -299,6 +326,8 @@ namespace Polygon_editor
 
 					parallelEdges[0] = (null, null, null);
 					parallelEdges[1] = (null, null, null);
+					this.label1.Text = "null";
+					return;
 				}
 
 				this.label1.Text = "edge2";
@@ -310,11 +339,11 @@ namespace Polygon_editor
 				Vertex b = parallelEdges[0].poly.vertices[(int)parallelEdges[0].idxB];
 				Vertex c = parallelEdges[1].poly.vertices[(int)parallelEdges[1].idxA];
 				Vertex d = parallelEdges[1].poly.vertices[(int)parallelEdges[1].idxB];
-				constraints.Add(new Parallel(a, b, c, d));
+				parallelConstraints.Add(new Parallel(a, b, c, d));
 
-				if (!constraints.Last().isValid())
+				if (!parallelConstraints.Last().isValid())
 				{
-					constraints.Last().fix(1);
+					parallelConstraints.Last().fix(2);
 					reDraw();
 					this.label1.Text = "reDraw";
 				}
@@ -427,33 +456,19 @@ namespace Polygon_editor
 
 				this.label1.Text = "cords: " + e.X.ToString() + ", " + e.Y.ToString();
 
-				// mam wybrany wierzcho³ek, muszê sprawdziæ jego dwie krawêdzie czy maj¹ constaint
-				/*(Polygon? poly, int index) = findPolygonByVertex(pressedVertex);
+				// jeœli wierzcho³ek koñczy krawêdŸ, która ma fixed d³ugoœæ to ruszamy ca³¹ krawêdŸ
+				// mam nadziejê, ¿e bêdzie to propagowaæ
+				HashSet<Vertex> verticesToMove = fixedLengthVerticesList(pressedVertex);
 
-				if (poly != null)
+				foreach (Vertex vertex in verticesToMove)
 				{
-					Vertex prev = poly.vertices[(poly.vertices.Count + index - 1) % poly.vertices.Count];
-					Vertex curr = poly.vertices[index];
-					Vertex next = poly.vertices[(poly.vertices.Count + index + 1) % poly.vertices.Count];
+					// one sie nie usuwaja tylko s¹ w jednym miejscu
+					vertex.p.X += e.X - mousePosition.X;
+					vertex.p.Y += e.Y - mousePosition.Y
+				};
 
-					(Constraint? constraint1, int edge1) = doesEdgeHasConstraint(prev, curr);
-					(Constraint? constraint2, int edge2) = doesEdgeHasConstraint(next, curr);
-
-					if (constraint1 != null)
-					{
-						if (edge1 == 1)
-						{
-							if (!constraint1.isValid())
-							{
-								constraint1.fix(1);
-							}
-						}
-						else
-						{
-
-						}
-					}
-				}*/
+				mousePosition.X = e.X;
+				mousePosition.Y = e.Y;
 
 				reDraw();
 			}
@@ -472,10 +487,13 @@ namespace Polygon_editor
 			}
 			else if (this.radioButton_moveEdge.Checked && mouseDown == true && pressedEdge != (null, null))
 			{
-				pressedEdge.Item1.p.X += e.X - mousePosition.X;
-				pressedEdge.Item1.p.Y += e.Y - mousePosition.Y;
-				pressedEdge.Item2.p.X += e.X - mousePosition.X;
-				pressedEdge.Item2.p.Y += e.Y - mousePosition.Y;
+				HashSet<Vertex> verticesToMove = fixedLengthVerticesList(pressedEdge.Item1, pressedEdge.Item2);
+
+				foreach (Vertex vertex in verticesToMove)
+				{
+					vertex.p.X += e.X - mousePosition.X;
+					vertex.p.Y += e.Y - mousePosition.Y;
+				}
 
 				mousePosition.X = e.X;
 				mousePosition.Y = e.Y;
@@ -485,7 +503,7 @@ namespace Polygon_editor
 
 			if (mouseDown == true)
 			{
-				foreach(Constraint con in constraints)
+				foreach(Parallel con in parallelConstraints)
 				{
 					if (!con.isValid())
 					{
@@ -620,7 +638,7 @@ namespace Polygon_editor
 
 		private (Constraint?, int) doesEdgeHasConstraint(Vertex a, Vertex b)
 		{
-			foreach (Constraint constraint in constraints)
+			/*foreach (Constraint constraint in constraints)
 			{
 				if ((a == constraint.a && b == constraint.b) || (b == constraint.a && a == constraint.b))
 				{
@@ -630,9 +648,82 @@ namespace Polygon_editor
 				{
 					return (constraint, 2); 
 				}
-			}
+			}*/
 
 			return (null, -1);
+		}
+
+		private HashSet<Vertex> fixedLengthVerticesList(Vertex a)
+		{
+			HashSet<Vertex> resultList = new HashSet<Vertex>();
+			HashSet<Vertex> resultListCopy;
+			resultList.Add(a);
+			bool wasAdded;
+
+			do
+			{
+				wasAdded = false;
+
+				foreach (SameLenght sameLenghtConstraint in sameLenghtConstraints)
+				{
+					resultListCopy = new HashSet<Vertex>(resultList);
+					foreach (Vertex v in resultList)
+					{
+						if (sameLenghtConstraint.containsVertex(v))
+						{
+							if (!resultListCopy.Contains(sameLenghtConstraint.a) || !resultListCopy.Contains(sameLenghtConstraint.b))
+							{
+								wasAdded = true;
+							}
+							resultListCopy.Add(sameLenghtConstraint.a);
+							resultListCopy.Add(sameLenghtConstraint.b);
+						}
+					}
+					resultList = resultListCopy;
+				}
+
+			} while (wasAdded == true);
+
+			this.radioButton_addPolygon.Text = "Add polygon (poly: " + polygons.Count + ", v in last: " + polygons.Last().vertices.Count;
+
+			return resultList;
+		}
+
+		private HashSet<Vertex> fixedLengthVerticesList(Vertex a, Vertex b)
+		{
+			HashSet<Vertex> resultList = new HashSet<Vertex>();
+			HashSet<Vertex> resultListCopy;
+			resultList.Add(a);
+			resultList.Add(b);
+			bool wasAdded;
+
+			do
+			{
+				wasAdded = false;
+
+				foreach (SameLenght sameLenghtConstraint in sameLenghtConstraints)
+				{
+					resultListCopy = new HashSet<Vertex>(resultList);
+					foreach (Vertex v in resultList)
+					{
+						if (sameLenghtConstraint.containsVertex(v))
+						{
+							if (!resultListCopy.Contains(sameLenghtConstraint.a) || !resultListCopy.Contains(sameLenghtConstraint.b))
+							{
+								wasAdded = true;
+							}
+							resultListCopy.Add(sameLenghtConstraint.a);
+							resultListCopy.Add(sameLenghtConstraint.b);
+						}
+					}
+					resultList = resultListCopy;
+				}
+
+			} while (wasAdded == true);
+
+			this.radioButton_addPolygon.Text = "Add polygon (poly: " + polygons.Count + ", v in last: " + polygons.Last().vertices.Count;
+
+			return resultList;
 		}
 	}
 }

@@ -46,8 +46,8 @@
 			this.groupBox_drawMode = new System.Windows.Forms.GroupBox();
 			this.radioButton_defaultDrawing = new System.Windows.Forms.RadioButton();
 			this.radioButton_bresenham = new System.Windows.Forms.RadioButton();
-			this.groupBox_constraints = new System.Windows.Forms.GroupBox();
 			this.pictureBox_workingArea = new System.Windows.Forms.PictureBox();
+			this.radioButton_deleteConstrain = new System.Windows.Forms.RadioButton();
 			this.tableLayoutPanel_main.SuspendLayout();
 			this.tableLayoutPanel_right.SuspendLayout();
 			this.groupBox_edit.SuspendLayout();
@@ -76,19 +76,18 @@
 			this.tableLayoutPanel_right.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
 			this.tableLayoutPanel_right.Controls.Add(this.groupBox_edit, 0, 0);
 			this.tableLayoutPanel_right.Controls.Add(this.groupBox_drawMode, 0, 1);
-			this.tableLayoutPanel_right.Controls.Add(this.groupBox_constraints, 0, 2);
 			this.tableLayoutPanel_right.Dock = System.Windows.Forms.DockStyle.Fill;
 			this.tableLayoutPanel_right.Location = new System.Drawing.Point(603, 3);
 			this.tableLayoutPanel_right.Name = "tableLayoutPanel_right";
-			this.tableLayoutPanel_right.RowCount = 3;
+			this.tableLayoutPanel_right.RowCount = 2;
 			this.tableLayoutPanel_right.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 77.56232F));
 			this.tableLayoutPanel_right.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 22.43767F));
-			this.tableLayoutPanel_right.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 33F));
 			this.tableLayoutPanel_right.Size = new System.Drawing.Size(194, 444);
 			this.tableLayoutPanel_right.TabIndex = 1;
 			// 
 			// groupBox_edit
 			// 
+			this.groupBox_edit.Controls.Add(this.radioButton_deleteConstrain);
 			this.groupBox_edit.Controls.Add(this.radioButton_parallel);
 			this.groupBox_edit.Controls.Add(this.button_clear);
 			this.groupBox_edit.Controls.Add(this.radioButton_sameLength);
@@ -104,7 +103,7 @@
 			this.groupBox_edit.Dock = System.Windows.Forms.DockStyle.Fill;
 			this.groupBox_edit.Location = new System.Drawing.Point(3, 3);
 			this.groupBox_edit.Name = "groupBox_edit";
-			this.groupBox_edit.Size = new System.Drawing.Size(188, 312);
+			this.groupBox_edit.Size = new System.Drawing.Size(188, 338);
 			this.groupBox_edit.TabIndex = 0;
 			this.groupBox_edit.TabStop = false;
 			this.groupBox_edit.Text = "Edit";
@@ -238,9 +237,9 @@
 			this.groupBox_drawMode.Controls.Add(this.radioButton_defaultDrawing);
 			this.groupBox_drawMode.Controls.Add(this.radioButton_bresenham);
 			this.groupBox_drawMode.Dock = System.Windows.Forms.DockStyle.Fill;
-			this.groupBox_drawMode.Location = new System.Drawing.Point(3, 321);
+			this.groupBox_drawMode.Location = new System.Drawing.Point(3, 347);
 			this.groupBox_drawMode.Name = "groupBox_drawMode";
-			this.groupBox_drawMode.Size = new System.Drawing.Size(188, 86);
+			this.groupBox_drawMode.Size = new System.Drawing.Size(188, 94);
 			this.groupBox_drawMode.TabIndex = 1;
 			this.groupBox_drawMode.TabStop = false;
 			this.groupBox_drawMode.Text = "Drawing mode";
@@ -267,16 +266,6 @@
 			this.radioButton_bresenham.Text = "Bresenham algorithm";
 			this.radioButton_bresenham.UseVisualStyleBackColor = true;
 			// 
-			// groupBox_constraints
-			// 
-			this.groupBox_constraints.Dock = System.Windows.Forms.DockStyle.Fill;
-			this.groupBox_constraints.Location = new System.Drawing.Point(3, 413);
-			this.groupBox_constraints.Name = "groupBox_constraints";
-			this.groupBox_constraints.Size = new System.Drawing.Size(188, 28);
-			this.groupBox_constraints.TabIndex = 2;
-			this.groupBox_constraints.TabStop = false;
-			this.groupBox_constraints.Text = "Constraints";
-			// 
 			// pictureBox_workingArea
 			// 
 			this.pictureBox_workingArea.Dock = System.Windows.Forms.DockStyle.Fill;
@@ -288,6 +277,17 @@
 			this.pictureBox_workingArea.MouseDown += new System.Windows.Forms.MouseEventHandler(this.pictureBox_workingArea_MouseDown);
 			this.pictureBox_workingArea.MouseMove += new System.Windows.Forms.MouseEventHandler(this.pictureBox_workingArea_MouseMove);
 			this.pictureBox_workingArea.MouseUp += new System.Windows.Forms.MouseEventHandler(this.pictureBox_workingArea_MouseUp);
+			// 
+			// radioButton_deleteConstrain
+			// 
+			this.radioButton_deleteConstrain.AutoSize = true;
+			this.radioButton_deleteConstrain.Location = new System.Drawing.Point(6, 312);
+			this.radioButton_deleteConstrain.Name = "radioButton_deleteConstrain";
+			this.radioButton_deleteConstrain.Size = new System.Drawing.Size(110, 19);
+			this.radioButton_deleteConstrain.TabIndex = 10;
+			this.radioButton_deleteConstrain.TabStop = true;
+			this.radioButton_deleteConstrain.Text = "Delete constrain";
+			this.radioButton_deleteConstrain.UseVisualStyleBackColor = true;
 			// 
 			// Form1
 			// 
@@ -329,6 +329,6 @@
 		private Button button_clear;
 		private RadioButton radioButton_parallel;
 		private RadioButton radioButton_sameLength;
-		private GroupBox groupBox_constraints;
+		private RadioButton radioButton_deleteConstrain;
 	}
 }

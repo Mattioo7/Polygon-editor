@@ -9,13 +9,13 @@ namespace Polygon_editor
 {
 	internal abstract class Constraint
 	{
-		public Vertex a, b, c, d;
+		public Vertex a, b;
 
 		public abstract void fix(int edgeNr);
 
 		public abstract bool isValid();
 
-		public double SegmentLength(Point p, Point v)
+		public double segmentLength(Point p, Point v)
 		{
 			double diffX = (v.X - p.X);
 			double diffY = (v.Y - p.Y);
@@ -26,58 +26,32 @@ namespace Polygon_editor
 
 	internal class SameLenght : Constraint
 	{
-		public double firstSegmentLength()
+		public SameLenght(Vertex a, Vertex b)
 		{
-			return Math.Sqrt(Math.Pow(a.p.X - b.p.X, 2) + Math.Pow(a.p.Y - b.p.Y, 2));
-		}
-
-		public double secondSegmentLength()
-		{
-			return Math.Sqrt(Math.Pow(a.p.X - b.p.X, 2) + Math.Pow(a.p.Y - b.p.Y, 2));
-		}
-
-		public override bool isValid()
-		{
-			return firstSegmentLength() == secondSegmentLength();
+			this.a = a;
+			this.b = b;
 		}
 
 		public override void fix(int edgeNr)
 		{
-			Vertex vertex1;
-			Vertex vertex2;
-			double desiredLength;
-			double brokenLength;
+			throw new NotImplementedException();
+		}
 
-			if (edgeNr == 1)
-			{
-				vertex1 = a;
-				vertex2 = b;
-				desiredLength = secondSegmentLength();
-				brokenLength = firstSegmentLength();
-			}
-			else
-			{
-				vertex1 = c;
-				vertex2 = d;
-				desiredLength = firstSegmentLength();
-				brokenLength = secondSegmentLength();
-			}
+		public override bool isValid()
+		{
+			throw new NotImplementedException();
+		}
 
-			double alfa = desiredLength / brokenLength;
-			double diffrence = desiredLength - brokenLength;
-			Point v = new Point(d.p.X - b.p.X, d.p.Y - b.p.Y);
-
-			v.X = (int)Math.Round(v.X * alfa);
-			v.Y = (int)Math.Round(v.Y * alfa);
-			if (v.X < 20000 && v.Y < 20000)
-				d.p.X = b.p.X + v.X;
-			d.p.Y = b.p.Y + v.Y;
-		
+		public bool containsVertex(Vertex v)
+		{
+			return v == a || v == b;
 		}
 	}
 
 	internal class Parallel : Constraint
 	{
+		public Vertex c, d;
+
 		public Parallel(Vertex a, Vertex b, Vertex c, Vertex d)
 		{
 			this.a = a;
@@ -88,8 +62,8 @@ namespace Polygon_editor
 		
 		public override void fix(int edgeNr)
 		{
-			double len = SegmentLength(a.p, b.p);
-			double len2 = SegmentLength(c.p, d.p);
+			double len = segmentLength(a.p, b.p);
+			double len2 = segmentLength(c.p, d.p);
 			double wsp = len2 / len;
 			if (len >= 0.01)
 			{
