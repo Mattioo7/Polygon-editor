@@ -31,7 +31,9 @@
 			this.tableLayoutPanel_main = new System.Windows.Forms.TableLayoutPanel();
 			this.tableLayoutPanel_right = new System.Windows.Forms.TableLayoutPanel();
 			this.groupBox_edit = new System.Windows.Forms.GroupBox();
+			this.radioButton_parallel = new System.Windows.Forms.RadioButton();
 			this.button_clear = new System.Windows.Forms.Button();
+			this.radioButton_sameLength = new System.Windows.Forms.RadioButton();
 			this.label1 = new System.Windows.Forms.Label();
 			this.radioButton_movePolygon = new System.Windows.Forms.RadioButton();
 			this.radioButton_moveEdge = new System.Windows.Forms.RadioButton();
@@ -44,10 +46,8 @@
 			this.groupBox_drawMode = new System.Windows.Forms.GroupBox();
 			this.radioButton_defaultDrawing = new System.Windows.Forms.RadioButton();
 			this.radioButton_bresenham = new System.Windows.Forms.RadioButton();
-			this.pictureBox_workingArea = new System.Windows.Forms.PictureBox();
 			this.groupBox_constraints = new System.Windows.Forms.GroupBox();
-			this.radioButton_sameLength = new System.Windows.Forms.RadioButton();
-			this.radioButton_parallel = new System.Windows.Forms.RadioButton();
+			this.pictureBox_workingArea = new System.Windows.Forms.PictureBox();
 			this.tableLayoutPanel_main.SuspendLayout();
 			this.tableLayoutPanel_right.SuspendLayout();
 			this.groupBox_edit.SuspendLayout();
@@ -109,6 +109,17 @@
 			this.groupBox_edit.TabStop = false;
 			this.groupBox_edit.Text = "Edit";
 			// 
+			// radioButton_parallel
+			// 
+			this.radioButton_parallel.AutoSize = true;
+			this.radioButton_parallel.Location = new System.Drawing.Point(6, 287);
+			this.radioButton_parallel.Name = "radioButton_parallel";
+			this.radioButton_parallel.Size = new System.Drawing.Size(117, 19);
+			this.radioButton_parallel.TabIndex = 1;
+			this.radioButton_parallel.TabStop = true;
+			this.radioButton_parallel.Text = "Parallel segments";
+			this.radioButton_parallel.UseVisualStyleBackColor = true;
+			// 
 			// button_clear
 			// 
 			this.button_clear.Location = new System.Drawing.Point(113, 228);
@@ -118,6 +129,17 @@
 			this.button_clear.Text = "Clear";
 			this.button_clear.UseVisualStyleBackColor = true;
 			this.button_clear.Click += new System.EventHandler(this.button_clear_Click);
+			// 
+			// radioButton_sameLength
+			// 
+			this.radioButton_sameLength.AutoSize = true;
+			this.radioButton_sameLength.Location = new System.Drawing.Point(6, 262);
+			this.radioButton_sameLength.Name = "radioButton_sameLength";
+			this.radioButton_sameLength.Size = new System.Drawing.Size(91, 19);
+			this.radioButton_sameLength.TabIndex = 0;
+			this.radioButton_sameLength.TabStop = true;
+			this.radioButton_sameLength.Text = "Same length";
+			this.radioButton_sameLength.UseVisualStyleBackColor = true;
 			// 
 			// label1
 			// 
@@ -245,6 +267,16 @@
 			this.radioButton_bresenham.Text = "Bresenham algorithm";
 			this.radioButton_bresenham.UseVisualStyleBackColor = true;
 			// 
+			// groupBox_constraints
+			// 
+			this.groupBox_constraints.Dock = System.Windows.Forms.DockStyle.Fill;
+			this.groupBox_constraints.Location = new System.Drawing.Point(3, 413);
+			this.groupBox_constraints.Name = "groupBox_constraints";
+			this.groupBox_constraints.Size = new System.Drawing.Size(188, 28);
+			this.groupBox_constraints.TabIndex = 2;
+			this.groupBox_constraints.TabStop = false;
+			this.groupBox_constraints.Text = "Constraints";
+			// 
 			// pictureBox_workingArea
 			// 
 			this.pictureBox_workingArea.Dock = System.Windows.Forms.DockStyle.Fill;
@@ -256,38 +288,6 @@
 			this.pictureBox_workingArea.MouseDown += new System.Windows.Forms.MouseEventHandler(this.pictureBox_workingArea_MouseDown);
 			this.pictureBox_workingArea.MouseMove += new System.Windows.Forms.MouseEventHandler(this.pictureBox_workingArea_MouseMove);
 			this.pictureBox_workingArea.MouseUp += new System.Windows.Forms.MouseEventHandler(this.pictureBox_workingArea_MouseUp);
-			// 
-			// groupBox_constraints
-			// 
-			this.groupBox_constraints.Dock = System.Windows.Forms.DockStyle.Fill;
-			this.groupBox_constraints.Location = new System.Drawing.Point(3, 413);
-			this.groupBox_constraints.Name = "groupBox_constraints";
-			this.groupBox_constraints.Size = new System.Drawing.Size(188, 28);
-			this.groupBox_constraints.TabIndex = 2;
-			this.groupBox_constraints.TabStop = false;
-			this.groupBox_constraints.Text = "Constraints";
-			// 
-			// radioButton_sameLength
-			// 
-			this.radioButton_sameLength.AutoSize = true;
-			this.radioButton_sameLength.Location = new System.Drawing.Point(5, 262);
-			this.radioButton_sameLength.Name = "radioButton_sameLength";
-			this.radioButton_sameLength.Size = new System.Drawing.Size(91, 19);
-			this.radioButton_sameLength.TabIndex = 0;
-			this.radioButton_sameLength.TabStop = true;
-			this.radioButton_sameLength.Text = "Same length";
-			this.radioButton_sameLength.UseVisualStyleBackColor = true;
-			// 
-			// radioButton_parallel
-			// 
-			this.radioButton_parallel.AutoSize = true;
-			this.radioButton_parallel.Location = new System.Drawing.Point(6, 287);
-			this.radioButton_parallel.Name = "radioButton_parallel";
-			this.radioButton_parallel.Size = new System.Drawing.Size(117, 19);
-			this.radioButton_parallel.TabIndex = 1;
-			this.radioButton_parallel.TabStop = true;
-			this.radioButton_parallel.Text = "Parallel segments";
-			this.radioButton_parallel.UseVisualStyleBackColor = true;
 			// 
 			// Form1
 			// 

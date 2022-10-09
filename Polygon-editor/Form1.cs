@@ -15,7 +15,7 @@ namespace Polygon_editor
 		private bool mouseDown;
 		private Vertex? pressedVertex;
 		private (Vertex?, Vertex?) pressedEdge;
-		private (Vertex?, Vertex?, Polygon?)[] parallelEdges;
+		private (int? idxA, int? idxB, Polygon? poly)[] parallelEdges;
 		private Polygon? pressedPolygon;
 		private Point mousePosition;
 
@@ -35,11 +35,12 @@ namespace Polygon_editor
 
 			numberOfVerticesInNewPolygon = 0;
 			polygons = new List<Polygon>();
+			constraints = new List<Constraint>();
 			mouseDown = false;
 			pressedVertex = null;
 			pressedPolygon = null;
 
-			parallelEdges = new (Vertex?, Vertex?, Polygon?)[2];
+			parallelEdges = new (int?, int?, Polygon?)[2];
 		}
 
 		private void pictureBox_workingArea_MouseDown(object sender, MouseEventArgs e)
@@ -273,15 +274,54 @@ namespace Polygon_editor
 
 		private void sameLength(MouseEventArgs e)
 		{
-			(int? a, int? b, Polygon? poly) edge = findEdge(e);
 			
 
-			
+
+
 		}
 
 		private void parallel(MouseEventArgs e)
 		{
-			
+			if (parallelEdges[0] == (null, null, null))
+			{
+				parallelEdges[0] = findEdge(e);
+
+				this.label1.Text = "edge1";
+			}
+			else
+			{
+				parallelEdges[1] = findEdge(e);
+
+				if (parallelEdges[0].poly == parallelEdges[1].poly && parallelEdges[0].poly.vertices.Count == 3)
+				{
+					//put error
+					MessageBox.Show("Invalid constraint", "error", MessageBoxButtons.OK);
+
+					parallelEdges[0] = (null, null, null);
+					parallelEdges[1] = (null, null, null);
+				}
+
+				this.label1.Text = "edge2";
+			}
+
+			if (parallelEdges[1] != (null, null, null))
+			{
+				Vertex a = parallelEdges[0].poly.vertices[(int)parallelEdges[0].idxA];
+				Vertex b = parallelEdges[0].poly.vertices[(int)parallelEdges[0].idxB];
+				Vertex c = parallelEdges[1].poly.vertices[(int)parallelEdges[1].idxA];
+				Vertex d = parallelEdges[1].poly.vertices[(int)parallelEdges[1].idxB];
+				constraints.Add(new Parallel(a, b, c, d));
+
+				if (!constraints.Last().isValid())
+				{
+					constraints.Last().fix(1);
+					reDraw();
+					this.label1.Text = "reDraw";
+				}
+
+				parallelEdges[0] = (null, null, null);
+				parallelEdges[1] = (null, null, null);
+			}
 		}
 
 		private void PutLine(Point a, Point b, Graphics e, Brush br)
@@ -385,8 +425,10 @@ namespace Polygon_editor
 				pressedVertex.p.X = e.X;
 				pressedVertex.p.Y = e.Y;
 
+				this.label1.Text = "cords: " + e.X.ToString() + ", " + e.Y.ToString();
+
 				// mam wybrany wierzcho³ek, muszê sprawdziæ jego dwie krawêdzie czy maj¹ constaint
-				(Polygon? poly, int index) = findPolygonByVertex(pressedVertex);
+				/*(Polygon? poly, int index) = findPolygonByVertex(pressedVertex);
 
 				if (poly != null)
 				{
@@ -411,7 +453,7 @@ namespace Polygon_editor
 
 						}
 					}
-				}
+				}*/
 
 				reDraw();
 			}
@@ -439,6 +481,18 @@ namespace Polygon_editor
 				mousePosition.Y = e.Y;
 
 				reDraw();
+			}
+
+			if (mouseDown == true)
+			{
+				foreach(Constraint con in constraints)
+				{
+					if (!con.isValid())
+					{
+						con.fix(1);
+						reDraw();
+					}
+				}
 			}
 		}
 
