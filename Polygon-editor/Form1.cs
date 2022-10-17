@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
+using System.Windows.Forms;
 using System.Windows.Forms.VisualStyles;
 
 namespace Polygon_editor
@@ -11,9 +12,10 @@ namespace Polygon_editor
 		private Pen pen;
 		private int numberOfVerticesInNewPolygon;
 		private List<Polygon> polygons;
-		private List<Parallel> parallelConstraints;
 		private List<SameLenght> sameLenghtConstraints;
+		private List<Parallel> parallelConstraints;
 		private const int RADIUS = 6;
+		private const int RADIUS_OF_MARKER = 16;
 		private bool mouseDown;
 		private Vertex? pressedVertex;
 		private (Vertex?, Vertex?) pressedEdge;
@@ -25,7 +27,11 @@ namespace Polygon_editor
 		{
 			InitializeComponent();
 
-			// zrobiæ funkcjê wyczyœæ wszystkie zmienne
+			initializeEnviroment();
+		}
+
+		private void initializeEnviroment()
+		{
 			drawArea = new Bitmap(this.pictureBox_workingArea.Size.Width, this.pictureBox_workingArea.Size.Height);
 			this.pictureBox_workingArea.Image = drawArea;
 			using (Graphics g = Graphics.FromImage(drawArea))
@@ -86,19 +92,29 @@ namespace Polygon_editor
 			else if (this.radioButton_sameLength.Checked)
 			{
 				this.label1.Text = "same length";
-				sameLength(e);
+				addSameLengthConstraint(e);
 			}
 			else if (this.radioButton_parallel.Checked)
 			{
 				this.label1.Text = "parallel";
-				parallel(e);
+				addParallelEdgesConstraint(e);
 			}
-			
+			else if (this.radioButton_deleteConstraint.Checked)
+			{
+				this.label1.Text = "parallel";
+				//deleteConstraint(e);
+			}
+
 		}
 
 		private void pictureBox_workingArea_MouseUp(object sender, MouseEventArgs e)
 		{
-			mouseDown = false;	
+			if (mouseDown == true)
+			{
+				reDraw();
+			}
+
+			mouseDown = false;
 		}
 
 		private void addPolygon(MouseEventArgs e)
@@ -287,11 +303,8 @@ namespace Polygon_editor
 			}
 		}
 
-		private void sameLength(MouseEventArgs e)
+		private void addSameLengthConstraint(MouseEventArgs e)
 		{
-			// jeœli jest zabkolowana d³ugoœæ to poruszamy oboma wierzcho³kami w trakcie moveVertex oraz moveEdge równie¿
-			// potrzebujê iteracji po wierzcho³kach danego wielok¹ta
-
 			(int? a, int? b, Polygon? poly) edge = findEdge(e);
 
 			if (edge != (null, null, null))
@@ -299,15 +312,24 @@ namespace Polygon_editor
 				Vertex a = edge.poly.vertices[(int)edge.a];
 				Vertex b = edge.poly.vertices[(int)edge.b];
 
+				if (doesEdgeHasConstraint(a, b) != null)
+				{
+					return;
+				}
+
 				pressedEdge = (a,b);
 
 				sameLenghtConstraints.Add(new SameLenght(a, b));
+
+				drawConstraintNumber(a, b, sameLenghtConstraints.Count);
+				this.pictureBox_workingArea.Refresh();
+
 				this.label1.Text = "sameLen for: " + a.ToString() + " " + b.ToString();
 			}
 
 		}
 
-		private void parallel(MouseEventArgs e)
+		private void addParallelEdgesConstraint(MouseEventArgs e)
 		{
 			if (parallelEdges[0] == (null, null, null))
 			{
@@ -350,6 +372,31 @@ namespace Polygon_editor
 
 				parallelEdges[0] = (null, null, null);
 				parallelEdges[1] = (null, null, null);
+
+				drawConstraintNumber(a, b, parallelConstraints.Count);
+				drawConstraintNumber(c, d, parallelConstraints.Count);
+				this.pictureBox_workingArea.Refresh();
+			}
+		}
+
+		private void drawConstraintNumber(Vertex a, Vertex b, int drawnNumber)
+		{
+			// tutaj dodaæ, aby grapich by³o podawane z góry
+
+			Point midPoint = new Point();
+			midPoint.Y = (a.p.Y + b.p.Y) / 2;
+			midPoint.X = (a.p.X + b.p.X) / 2;
+
+			using (Graphics g = Graphics.FromImage(drawArea))
+			{
+				g.FillEllipse(Brushes.DarkGray, midPoint.X - RADIUS_OF_MARKER + 2, midPoint.Y - RADIUS_OF_MARKER + 2, (RADIUS_OF_MARKER - 2) * 2, (RADIUS_OF_MARKER - 2) * 2);
+				g.DrawString(drawnNumber.ToString(),
+					new Font("Ink Free", RADIUS_OF_MARKER, FontStyle.Bold),
+					new SolidBrush(Color.Yellow),
+					midPoint.X, midPoint.Y,
+					new StringFormat()
+					{ Alignment = StringAlignment.Center, LineAlignment = StringAlignment.Center });
+
 			}
 		}
 
@@ -412,9 +459,9 @@ namespace Polygon_editor
 			}
 		}
 
-		private void PutPixel(int x, int y, Graphics e, Brush b)
+		private void PutPixel(int x, int y, Graphics g, Brush b)
 		{
-			e.FillRectangle(b, x, y, 1, 1);
+			g.FillRectangle(b, x, y, 1, 1);
 		}
 
 		private void reDraw()
@@ -431,18 +478,21 @@ namespace Polygon_editor
 					}
 				}
 			}
+			for (int i = 0; i < sameLenghtConstraints.Count; ++i)
+			{
+				drawConstraintNumber(sameLenghtConstraints[i].a, sameLenghtConstraints[i].b, i + 1);
+			}
+			for (int i = 0; i < parallelConstraints.Count; ++i)
+			{
+				drawConstraintNumber(parallelConstraints[i].a, parallelConstraints[i].b, i + 1);
+				drawConstraintNumber(parallelConstraints[i].c, parallelConstraints[i].d, i + 1);
+			}
 			this.pictureBox_workingArea.Refresh();
 		}
 
 		private void button_clear_Click(object sender, EventArgs e)
 		{
-			numberOfVerticesInNewPolygon = 0;
-			polygons.Clear();
-
-			using (Graphics g = Graphics.FromImage(this.drawArea))
-			{
-				g.Clear(Color.AliceBlue);
-			}
+			initializeEnviroment(); 
 			this.pictureBox_workingArea.Refresh();
 		}
 
@@ -464,7 +514,7 @@ namespace Polygon_editor
 				{
 					// one sie nie usuwaja tylko s¹ w jednym miejscu
 					vertex.p.X += e.X - mousePosition.X;
-					vertex.p.Y += e.Y - mousePosition.Y
+					vertex.p.Y += e.Y - mousePosition.Y;
 				};
 
 				mousePosition.X = e.X;
@@ -482,7 +532,7 @@ namespace Polygon_editor
 				
 				mousePosition.X = e.X;
 				mousePosition.Y = e.Y;
-				
+
 				reDraw();
 			}
 			else if (this.radioButton_moveEdge.Checked && mouseDown == true && pressedEdge != (null, null))
@@ -508,7 +558,7 @@ namespace Polygon_editor
 					if (!con.isValid())
 					{
 						con.fix(1);
-						reDraw();
+						/*reDraw();*/
 					}
 				}
 			}
@@ -636,21 +686,29 @@ namespace Polygon_editor
 			}
 		}
 
-		private (Constraint?, int) doesEdgeHasConstraint(Vertex a, Vertex b)
+		private Constraint? doesEdgeHasConstraint(Vertex a, Vertex b)
 		{
-			/*foreach (Constraint constraint in constraints)
+			foreach (SameLenght constraint in sameLenghtConstraints)
 			{
 				if ((a == constraint.a && b == constraint.b) || (b == constraint.a && a == constraint.b))
 				{
-					return (constraint, 1); 
+					return constraint;
+				}
+			}
+
+			foreach (Parallel constraint in parallelConstraints)
+			{
+				if ((a == constraint.a && b == constraint.b) || (b == constraint.a && a == constraint.b))
+				{
+					return constraint;
 				}
 				else if ((a == constraint.c && b == constraint.d) || (b == constraint.c && a == constraint.d))
 				{
-					return (constraint, 2); 
+					return constraint;
 				}
-			}*/
+			}
 
-			return (null, -1);
+			return null;
 		}
 
 		private HashSet<Vertex> fixedLengthVerticesList(Vertex a)
@@ -724,6 +782,21 @@ namespace Polygon_editor
 			this.radioButton_addPolygon.Text = "Add polygon (poly: " + polygons.Count + ", v in last: " + polygons.Last().vertices.Count;
 
 			return resultList;
+		}
+
+		private void Form1_SizeChanged(object sender, EventArgs e)
+		{
+			var newsize = tableLayoutPanel_main.GetControlFromPosition(0, 0).Size;
+			drawArea = new Bitmap(newsize.Width, newsize.Height);
+			pictureBox_workingArea.Image = drawArea;
+			using (Graphics g = Graphics.FromImage(drawArea))
+			{
+				g.Clear(Color.LightBlue);
+			}
+
+			reDraw();
+
+			pictureBox_workingArea.Refresh();
 		}
 	}
 }

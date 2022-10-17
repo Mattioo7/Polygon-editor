@@ -31,6 +31,7 @@
 			this.tableLayoutPanel_main = new System.Windows.Forms.TableLayoutPanel();
 			this.tableLayoutPanel_right = new System.Windows.Forms.TableLayoutPanel();
 			this.groupBox_edit = new System.Windows.Forms.GroupBox();
+			this.radioButton_deleteConstraint = new System.Windows.Forms.RadioButton();
 			this.radioButton_parallel = new System.Windows.Forms.RadioButton();
 			this.button_clear = new System.Windows.Forms.Button();
 			this.radioButton_sameLength = new System.Windows.Forms.RadioButton();
@@ -47,7 +48,6 @@
 			this.radioButton_defaultDrawing = new System.Windows.Forms.RadioButton();
 			this.radioButton_bresenham = new System.Windows.Forms.RadioButton();
 			this.pictureBox_workingArea = new System.Windows.Forms.PictureBox();
-			this.radioButton_deleteConstrain = new System.Windows.Forms.RadioButton();
 			this.tableLayoutPanel_main.SuspendLayout();
 			this.tableLayoutPanel_right.SuspendLayout();
 			this.groupBox_edit.SuspendLayout();
@@ -87,7 +87,7 @@
 			// 
 			// groupBox_edit
 			// 
-			this.groupBox_edit.Controls.Add(this.radioButton_deleteConstrain);
+			this.groupBox_edit.Controls.Add(this.radioButton_deleteConstraint);
 			this.groupBox_edit.Controls.Add(this.radioButton_parallel);
 			this.groupBox_edit.Controls.Add(this.button_clear);
 			this.groupBox_edit.Controls.Add(this.radioButton_sameLength);
@@ -107,6 +107,17 @@
 			this.groupBox_edit.TabIndex = 0;
 			this.groupBox_edit.TabStop = false;
 			this.groupBox_edit.Text = "Edit";
+			// 
+			// radioButton_deleteConstraint
+			// 
+			this.radioButton_deleteConstraint.AutoSize = true;
+			this.radioButton_deleteConstraint.Location = new System.Drawing.Point(6, 312);
+			this.radioButton_deleteConstraint.Name = "radioButton_deleteConstraint";
+			this.radioButton_deleteConstraint.Size = new System.Drawing.Size(114, 19);
+			this.radioButton_deleteConstraint.TabIndex = 10;
+			this.radioButton_deleteConstraint.TabStop = true;
+			this.radioButton_deleteConstraint.Text = "Delete constraint";
+			this.radioButton_deleteConstraint.UseVisualStyleBackColor = true;
 			// 
 			// radioButton_parallel
 			// 
@@ -278,17 +289,6 @@
 			this.pictureBox_workingArea.MouseMove += new System.Windows.Forms.MouseEventHandler(this.pictureBox_workingArea_MouseMove);
 			this.pictureBox_workingArea.MouseUp += new System.Windows.Forms.MouseEventHandler(this.pictureBox_workingArea_MouseUp);
 			// 
-			// radioButton_deleteConstrain
-			// 
-			this.radioButton_deleteConstrain.AutoSize = true;
-			this.radioButton_deleteConstrain.Location = new System.Drawing.Point(6, 312);
-			this.radioButton_deleteConstrain.Name = "radioButton_deleteConstrain";
-			this.radioButton_deleteConstrain.Size = new System.Drawing.Size(110, 19);
-			this.radioButton_deleteConstrain.TabIndex = 10;
-			this.radioButton_deleteConstrain.TabStop = true;
-			this.radioButton_deleteConstrain.Text = "Delete constrain";
-			this.radioButton_deleteConstrain.UseVisualStyleBackColor = true;
-			// 
 			// Form1
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
@@ -297,6 +297,7 @@
 			this.Controls.Add(this.tableLayoutPanel_main);
 			this.Name = "Form1";
 			this.Text = "Form1";
+			this.SizeChanged += new System.EventHandler(this.Form1_SizeChanged);
 			this.tableLayoutPanel_main.ResumeLayout(false);
 			this.tableLayoutPanel_right.ResumeLayout(false);
 			this.groupBox_edit.ResumeLayout(false);
@@ -329,6 +330,6 @@
 		private Button button_clear;
 		private RadioButton radioButton_parallel;
 		private RadioButton radioButton_sameLength;
-		private RadioButton radioButton_deleteConstrain;
+		private RadioButton radioButton_deleteConstraint;
 	}
 }
