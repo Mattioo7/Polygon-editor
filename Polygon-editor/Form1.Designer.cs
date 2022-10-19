@@ -116,6 +116,7 @@
 			this.radioButton_deleteConstraint.TabStop = true;
 			this.radioButton_deleteConstraint.Text = "Delete constraint";
 			this.radioButton_deleteConstraint.UseVisualStyleBackColor = true;
+			this.radioButton_deleteConstraint.CheckedChanged += new System.EventHandler(this.radioButton_deleteConstraint_CheckedChanged);
 			// 
 			// radioButton_parallel
 			// 
@@ -127,11 +128,11 @@
 			this.radioButton_parallel.TabStop = true;
 			this.radioButton_parallel.Text = "Parallel segments";
 			this.radioButton_parallel.UseVisualStyleBackColor = true;
+			this.radioButton_parallel.CheckedChanged += new System.EventHandler(this.radioButton_parallel_CheckedChanged);
 			// 
 			// button_clear
 			// 
-			this.button_clear.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Right)));
+			this.button_clear.Anchor = System.Windows.Forms.AnchorStyles.Top;
 			this.button_clear.Location = new System.Drawing.Point(6, 249);
 			this.button_clear.Name = "button_clear";
 			this.button_clear.Size = new System.Drawing.Size(75, 28);
@@ -150,6 +151,7 @@
 			this.radioButton_sameLength.TabStop = true;
 			this.radioButton_sameLength.Text = "Same length";
 			this.radioButton_sameLength.UseVisualStyleBackColor = true;
+			this.radioButton_sameLength.CheckedChanged += new System.EventHandler(this.radioButton_sameLength_CheckedChanged);
 			// 
 			// label1
 			// 
@@ -169,6 +171,7 @@
 			this.radioButton_movePolygon.TabIndex = 7;
 			this.radioButton_movePolygon.Text = "Move polygon";
 			this.radioButton_movePolygon.UseVisualStyleBackColor = true;
+			this.radioButton_movePolygon.CheckedChanged += new System.EventHandler(this.radioButton_movePolygon_CheckedChanged);
 			// 
 			// radioButton_moveEdge
 			// 
@@ -179,6 +182,7 @@
 			this.radioButton_moveEdge.TabIndex = 6;
 			this.radioButton_moveEdge.Text = "Move edge";
 			this.radioButton_moveEdge.UseVisualStyleBackColor = true;
+			this.radioButton_moveEdge.CheckedChanged += new System.EventHandler(this.radioButton_moveEdge_CheckedChanged);
 			// 
 			// radioButton_edgeVertex
 			// 
@@ -189,6 +193,7 @@
 			this.radioButton_edgeVertex.TabIndex = 5;
 			this.radioButton_edgeVertex.Text = "Add vertex on the edge";
 			this.radioButton_edgeVertex.UseVisualStyleBackColor = true;
+			this.radioButton_edgeVertex.CheckedChanged += new System.EventHandler(this.radioButton_edgeVertex_CheckedChanged);
 			// 
 			// radioButton_deleteVertex
 			// 
@@ -199,6 +204,7 @@
 			this.radioButton_deleteVertex.TabIndex = 4;
 			this.radioButton_deleteVertex.Text = "Delete vertex";
 			this.radioButton_deleteVertex.UseVisualStyleBackColor = true;
+			this.radioButton_deleteVertex.CheckedChanged += new System.EventHandler(this.radioButton_deleteVertex_CheckedChanged);
 			// 
 			// radioButton_moveVertex
 			// 
@@ -209,6 +215,7 @@
 			this.radioButton_moveVertex.TabIndex = 3;
 			this.radioButton_moveVertex.Text = "Move vertex";
 			this.radioButton_moveVertex.UseVisualStyleBackColor = true;
+			this.radioButton_moveVertex.CheckedChanged += new System.EventHandler(this.radioButton_moveVertex_CheckedChanged);
 			// 
 			// radioButton_deletePolygon
 			// 
@@ -219,6 +226,7 @@
 			this.radioButton_deletePolygon.TabIndex = 1;
 			this.radioButton_deletePolygon.Text = "Delete polygon";
 			this.radioButton_deletePolygon.UseVisualStyleBackColor = true;
+			this.radioButton_deletePolygon.CheckedChanged += new System.EventHandler(this.radioButton_deletePolygon_CheckedChanged);
 			// 
 			// radioButton_addPolygon
 			// 

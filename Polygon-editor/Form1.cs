@@ -883,16 +883,6 @@ namespace Polygon_editor
 			return edge;
 		}
 
-		private void radioButton_addPolygon_CheckedChanged(object sender, EventArgs e)
-		{
-			if (!radioButton_addPolygon.Checked && numberOfVerticesInNewPolygon != 0)
-			{
-				deletePolygon(polygons.Last());
-				numberOfVerticesInNewPolygon = 0;
-				reDraw();
-			}
-		}
-
 		private Constraint? doesEdgeHasConstraint(Vertex a, Vertex b)
 		{
 			foreach (SameLenght constraint in sameLenghtConstraints)
@@ -1059,6 +1049,16 @@ namespace Polygon_editor
 			pictureBox_workingArea.Refresh();
 		}
 
+		private void radioButton_addPolygon_CheckedChanged(object sender, EventArgs e)
+		{
+			if (!radioButton_addPolygon.Checked && numberOfVerticesInNewPolygon != 0)
+			{
+				deletePolygon(polygons.Last());
+				clearVariables();
+				reDraw();
+			}
+		}
+
 		private void radioButton_defaultDrawing_CheckedChanged(object sender, EventArgs e)
 		{
 			reDraw();
@@ -1072,6 +1072,51 @@ namespace Polygon_editor
 			{
 				this.label1.Text += " bresenham";
 			}
+		}
+
+		private void radioButton_edgeVertex_CheckedChanged(object sender, EventArgs e)
+		{
+			clearVariables();
+		}
+
+		private void radioButton_moveVertex_CheckedChanged(object sender, EventArgs e)
+		{
+			clearVariables();
+		}
+
+		private void radioButton_moveEdge_CheckedChanged(object sender, EventArgs e)
+		{
+			clearVariables();
+		}
+
+		private void radioButton_movePolygon_CheckedChanged(object sender, EventArgs e)
+		{
+			clearVariables();
+		}
+
+		private void radioButton_deleteVertex_CheckedChanged(object sender, EventArgs e)
+		{
+			clearVariables();
+		}
+
+		private void radioButton_deletePolygon_CheckedChanged(object sender, EventArgs e)
+		{
+			clearVariables();
+		}
+
+		private void radioButton_sameLength_CheckedChanged(object sender, EventArgs e)
+		{
+			clearVariables();
+		}
+
+		private void radioButton_parallel_CheckedChanged(object sender, EventArgs e)
+		{
+			clearVariables();
+		}
+
+		private void radioButton_deleteConstraint_CheckedChanged(object sender, EventArgs e)
+		{
+			clearVariables();
 		}
 	}
 }
