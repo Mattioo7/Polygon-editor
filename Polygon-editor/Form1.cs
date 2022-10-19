@@ -52,6 +52,18 @@ namespace Polygon_editor
 			parallelEdges = new (int?, int?, Polygon?)[2];
 		}
 
+		private void clearVariables()
+		{
+			numberOfVerticesInNewPolygon = 0;
+			mouseDown = false;
+			pressedVertex = null;
+			pressedEdge = (null, null);
+			parallelEdges[0] = (null, null, null);
+			parallelEdges[1] = (null, null, null);
+			pressedPolygon = null;
+			mousePosition = new Point(0, 0);
+		}
+
 		private void pictureBox_workingArea_MouseDown(object sender, MouseEventArgs e)
 		{
 			if (this.radioButton_addPolygon.Checked)
@@ -101,8 +113,8 @@ namespace Polygon_editor
 			}
 			else if (this.radioButton_deleteConstraint.Checked)
 			{
-				this.label1.Text = "parallel";
-				//deleteConstraint(e);
+				this.label1.Text = "delete constraint";
+				deleteConstraint(e);
 			}
 
 		}
@@ -155,7 +167,7 @@ namespace Polygon_editor
 					numberOfVerticesInNewPolygon = 0;
 					using (Graphics g = Graphics.FromImage(this.drawArea))
 					{
-						PutLine(polygons.Last().vertices.Last().p, polygons.Last().vertices[0].p, g, Brushes.Black);
+						drawLine(polygons.Last().vertices.Last().p, polygons.Last().vertices[0].p, g, Brushes.Black);
 					}
 				}
 				else
@@ -181,7 +193,7 @@ namespace Polygon_editor
 							numberOfVerticesInNewPolygon++;
 							polygons.Last().vertices.Add(new Vertex(new Point(e.X, e.Y)));
 							g.FillEllipse(Brushes.Black, e.X - RADIUS + 2, e.Y - RADIUS + 2, (RADIUS - 2) * 2, (RADIUS - 2) * 2);
-							PutLine(polygons.Last().vertices.Last().p, polygons.Last().vertices[polygons.Last().vertices.Count - 2].p, g, Brushes.Black);
+							drawLine(polygons.Last().vertices.Last().p, polygons.Last().vertices[polygons.Last().vertices.Count - 2].p, g, Brushes.Black);
 						}
 					}
 
@@ -193,10 +205,6 @@ namespace Polygon_editor
 
 		private void deletePolygon(MouseEventArgs e)
 		{
-			// na razie trzeba klikn¹æ na wierzcho³ek
-
-			Polygon? polyToRemove = null;
-
 			foreach (Polygon poly in this.polygons)
 			{
 				foreach (Vertex v in poly.vertices)
@@ -206,21 +214,34 @@ namespace Polygon_editor
 
 					if (yDiff * yDiff + xDiff * xDiff < 4 * (RADIUS + 1) * (RADIUS + 1))
 					{
-						polyToRemove = poly;
+						deletePolygon(poly);
+						return;
 					}
 				}
 			}
 
-			if (polyToRemove != null)
-			{
-				this.polygons.Remove(polyToRemove);
-			}
-
-			reDraw();	// nie przesadzaæ z tymi reDraw()
+			reDraw();
 		}
 
 		private void deletePolygon(Polygon poly)
 		{
+			foreach (Vertex vertex in poly.vertices)
+			{
+				List<Constraint> constraints = doesVertexHasConstraints(vertex);
+
+				foreach (Constraint constraint in constraints)
+				{
+					if (constraint is SameLenght)
+					{
+						sameLenghtConstraints.Remove((SameLenght)constraint);
+					}
+					else
+					{
+						parallelConstraints.Remove((Parallel)constraint);
+					}
+				}
+			}
+
 			this.polygons.Remove(poly);
 		}
 
@@ -243,6 +264,36 @@ namespace Polygon_editor
 				{
 					if (poly.vertices.Contains(vertex))
 					{
+						int idx = poly.vertices.IndexOf(vertex);
+						Vertex a = poly.vertices[(idx - 1 + poly.vertices.Count) % poly.vertices.Count];
+						Vertex c = poly.vertices[(idx + 1) % poly.vertices.Count];
+						Constraint? constraint;
+
+						constraint = doesEdgeHasConstraint(a, vertex);
+						if (constraint != null)
+						{
+							if (constraint is SameLenght)
+							{
+								sameLenghtConstraints.Remove((SameLenght)constraint);
+							}
+							else
+							{
+								parallelConstraints.Remove((Parallel)constraint);
+							}
+						}
+						constraint = doesEdgeHasConstraint(vertex, c);
+						if (constraint != null)
+						{
+							if (constraint is SameLenght)
+							{
+								sameLenghtConstraints.Remove((SameLenght)constraint);
+							}
+							else
+							{
+								parallelConstraints.Remove((Parallel)constraint);
+							}
+						}
+
 						poly.vertices.Remove(vertex);
 
 						if (poly.vertices.Count <= 2)
@@ -261,19 +312,33 @@ namespace Polygon_editor
 		{
 			(int? a, int? b, Polygon? poly) edge = findEdge(e);
 
-			if (edge != (null, null, null))
-			{
-				this.label1.Text = "EDGE!";
-
-				Vertex newVertex = new Vertex(new Point(e.X, e.Y));
-				edge.poly.vertices.Insert((int)edge.b, newVertex);
-				reDraw();
-			}
-			else
+			if (edge == (null, null, null))
 			{
 				this.label1.Text = "MISS!";
+				return;
 			}
 
+			this.label1.Text = "EDGE!";
+
+			Vertex a = edge.poly.vertices[(int)edge.a];
+			Vertex b = edge.poly.vertices[(int)edge.b];
+
+			Constraint? constraint = doesEdgeHasConstraint(a, b);
+			if (constraint != null)
+			{
+				if (constraint is SameLenght)
+				{
+					sameLenghtConstraints.Remove((SameLenght)constraint);
+				}
+				else
+				{
+					parallelConstraints.Remove((Parallel)constraint);
+				}
+			}
+
+			Vertex newVertex = new Vertex(new Point(e.X, e.Y));
+			edge.poly.vertices.Insert((int)edge.b, newVertex);
+			reDraw();
 		}
 
 		private void moveEdge(MouseEventArgs e)
@@ -307,26 +372,26 @@ namespace Polygon_editor
 		{
 			(int? a, int? b, Polygon? poly) edge = findEdge(e);
 
-			if (edge != (null, null, null))
+			if (edge == (null, null, null))
 			{
-				Vertex a = edge.poly.vertices[(int)edge.a];
-				Vertex b = edge.poly.vertices[(int)edge.b];
-
-				if (doesEdgeHasConstraint(a, b) != null)
-				{
-					return;
-				}
-
-				pressedEdge = (a,b);
-
-				sameLenghtConstraints.Add(new SameLenght(a, b));
-
-				drawConstraintNumber(a, b, sameLenghtConstraints.Count);
-				this.pictureBox_workingArea.Refresh();
-
-				this.label1.Text = "sameLen for: " + a.ToString() + " " + b.ToString();
+				return;
 			}
 
+			Vertex a = edge.poly.vertices[(int)edge.a];
+			Vertex b = edge.poly.vertices[(int)edge.b];
+			if (doesEdgeHasConstraint(a, b) != null)
+			{
+				return;
+			}
+
+			pressedEdge = (a, b);
+
+			sameLenghtConstraints.Add(new SameLenght(a, b));
+
+			drawConstraintNumber(a, b, sameLenghtConstraints.Count, Brushes.Gray);
+			this.pictureBox_workingArea.Refresh();
+
+			this.label1.Text = "sameLen for: " + a.ToString() + " " + b.ToString();
 		}
 
 		private void addParallelEdgesConstraint(MouseEventArgs e)
@@ -336,10 +401,18 @@ namespace Polygon_editor
 				parallelEdges[0] = findEdge(e);
 
 				this.label1.Text = "edge1";
+
+				return;
 			}
 			else
 			{
 				parallelEdges[1] = findEdge(e);
+
+				if (parallelEdges[1] == parallelEdges[0])
+				{
+					parallelEdges[1] = (null, null, null);
+					return;
+				}
 
 				if (parallelEdges[0].poly == parallelEdges[1].poly && parallelEdges[0].poly.vertices.Count == 3)
 				{
@@ -365,21 +438,71 @@ namespace Polygon_editor
 
 				if (!parallelConstraints.Last().isValid())
 				{
-					parallelConstraints.Last().fix(2);
+					parallelConstraints.Last().fix(1);
 					reDraw();
 					this.label1.Text = "reDraw";
+				}
+
+				foreach (Parallel parallel in parallelConstraints)
+				{
+					if (parallel.a == d)
+					{
+						parallel.fix(1);
+					}
+					else if (parallel.b == d)
+					{
+						parallel.fix(2);
+					}
+					else if (parallel.c == d)
+					{
+						parallel.fix(3);
+					}
+					else if (parallel.d == d)
+					{
+						parallel.fix(4);
+					}
 				}
 
 				parallelEdges[0] = (null, null, null);
 				parallelEdges[1] = (null, null, null);
 
-				drawConstraintNumber(a, b, parallelConstraints.Count);
-				drawConstraintNumber(c, d, parallelConstraints.Count);
+				drawConstraintNumber(a, b, parallelConstraints.Count, Brushes.Green);
+				drawConstraintNumber(c, d, parallelConstraints.Count, Brushes.Green);
 				this.pictureBox_workingArea.Refresh();
 			}
 		}
 
-		private void drawConstraintNumber(Vertex a, Vertex b, int drawnNumber)
+		private void deleteConstraint(MouseEventArgs e)
+		{
+			(int? a, int? b, Polygon? poly) edge = findEdge(e);
+
+			if (edge == (null, null, null))
+			{
+				return;
+			}
+
+			Vertex a = edge.poly.vertices[(int)edge.a];
+			Vertex b = edge.poly.vertices[(int)edge.b];
+
+			Constraint? constraint = doesEdgeHasConstraint(a, b);
+			if (constraint == null)
+			{
+				return;
+			}
+
+			if (constraint is SameLenght)
+			{
+				sameLenghtConstraints.Remove((SameLenght)constraint);
+			}
+			else
+			{
+				parallelConstraints.Remove((Parallel)constraint);
+			}
+
+			reDraw();
+		}
+
+		private void drawConstraintNumber(Vertex a, Vertex b, int drawnNumber, Brush brush)
 		{
 			// tutaj dodaæ, aby grapich by³o podawane z góry
 
@@ -389,7 +512,7 @@ namespace Polygon_editor
 
 			using (Graphics g = Graphics.FromImage(drawArea))
 			{
-				g.FillEllipse(Brushes.DarkGray, midPoint.X - RADIUS_OF_MARKER + 2, midPoint.Y - RADIUS_OF_MARKER + 2, (RADIUS_OF_MARKER - 2) * 2, (RADIUS_OF_MARKER - 2) * 2);
+				g.FillEllipse(brush, midPoint.X - RADIUS_OF_MARKER + 2, midPoint.Y - RADIUS_OF_MARKER + 2, (RADIUS_OF_MARKER - 2) * 2, (RADIUS_OF_MARKER - 2) * 2);
 				g.DrawString(drawnNumber.ToString(),
 					new Font("Ink Free", RADIUS_OF_MARKER, FontStyle.Bold),
 					new SolidBrush(Color.Yellow),
@@ -400,11 +523,11 @@ namespace Polygon_editor
 			}
 		}
 
-		private void PutLine(Point a, Point b, Graphics e, Brush br)
+		private void drawLine(Point a, Point b, Graphics e, Brush br)
 		{
 			if (this.radioButton_bresenham.Checked)
 			{
-				BresenhamLine(a.X, a.Y, b.X, b.Y, e, br);
+				drawLineBresenham(a.X, a.Y, b.X, b.Y, e, br);
 			}
 			else
 			{
@@ -415,7 +538,7 @@ namespace Polygon_editor
 			}
 		}
 
-		private void BresenhamLine(int x, int y, int x2, int y2, Graphics e, Brush b)
+		private void drawLineBresenham(int x, int y, int x2, int y2, Graphics e, Brush b)
 		{
 			//http://tech-algorithm.com/articles/drawing-line-using-bresenham-algorithm/
 			int w = x2 - x;
@@ -438,7 +561,7 @@ namespace Polygon_editor
 				int numerator = longest >> 1;
 				for (int i = 0; i <= longest; i++)
 				{
-					PutPixel(x, y, e, b);
+					drawPixel(x, y, e, b);
 					numerator += shortest;
 					if (!(numerator < longest))
 					{
@@ -459,7 +582,7 @@ namespace Polygon_editor
 			}
 		}
 
-		private void PutPixel(int x, int y, Graphics g, Brush b)
+		private void drawPixel(int x, int y, Graphics g, Brush b)
 		{
 			g.FillRectangle(b, x, y, 1, 1);
 		}
@@ -473,19 +596,21 @@ namespace Polygon_editor
 				{
 					for (int i = 0; i < poly.vertices.Count; ++i)
 					{
-						PutLine(poly.vertices[i].p, poly.vertices[(poly.vertices.Count + i - 1) % poly.vertices.Count].p, g, Brushes.Black);
+						drawLine(poly.vertices[i].p, poly.vertices[(poly.vertices.Count + i - 1) % poly.vertices.Count].p, g, Brushes.Black);
 						g.FillEllipse(Brushes.Black, poly.vertices[i].p.X - RADIUS + 2, poly.vertices[i].p.Y - RADIUS + 2, (RADIUS - 2) * 2, (RADIUS - 2) * 2);
 					}
 				}
 			}
 			for (int i = 0; i < sameLenghtConstraints.Count; ++i)
 			{
-				drawConstraintNumber(sameLenghtConstraints[i].a, sameLenghtConstraints[i].b, i + 1);
+				// drawSameLength
+
+				drawConstraintNumber(sameLenghtConstraints[i].a, sameLenghtConstraints[i].b, i + 1, Brushes.Gray);
 			}
 			for (int i = 0; i < parallelConstraints.Count; ++i)
 			{
-				drawConstraintNumber(parallelConstraints[i].a, parallelConstraints[i].b, i + 1);
-				drawConstraintNumber(parallelConstraints[i].c, parallelConstraints[i].d, i + 1);
+				drawConstraintNumber(parallelConstraints[i].a, parallelConstraints[i].b, i + 1, Brushes.Green);
+				drawConstraintNumber(parallelConstraints[i].c, parallelConstraints[i].d, i + 1, Brushes.Green);
 			}
 			this.pictureBox_workingArea.Refresh();
 		}
@@ -520,6 +645,33 @@ namespace Polygon_editor
 				mousePosition.X = e.X;
 				mousePosition.Y = e.Y;
 
+				List<Constraint> constraints = doesVertexHasConstraints(pressedVertex);
+
+				foreach (Constraint constraint in constraints)
+				{
+					if (constraint is Parallel)
+					{
+						Parallel parallel = (Parallel)constraint;
+
+						if (pressedVertex == parallel.a)
+						{
+							parallel.fix(1);
+						}
+						else if (pressedVertex == parallel.b)
+						{
+							parallel.fix(2);
+						}
+						else if (pressedVertex == parallel.c)
+						{
+							parallel.fix(3);
+						}
+						else if (pressedVertex == parallel.d)
+						{
+							parallel.fix(4);
+						}
+					}
+				}
+
 				reDraw();
 			}
 			else if (this.radioButton_movePolygon.Checked && mouseDown == true && pressedPolygon != null)
@@ -548,20 +700,75 @@ namespace Polygon_editor
 				mousePosition.X = e.X;
 				mousePosition.Y = e.Y;
 
+				// fix constraints?
+				List<Constraint> constraints = doesVertexHasConstraints(pressedEdge.Item1);
+
+				foreach (Constraint constraint in constraints)
+				{
+					if (constraint is Parallel)
+					{
+						Parallel parallel = (Parallel)constraint;
+
+						if (pressedEdge.Item1 == parallel.a)
+						{
+							parallel.fix(1);
+						}
+						else if (pressedEdge.Item1 == parallel.b)
+						{
+							parallel.fix(2);
+						}
+						else if (pressedEdge.Item1 == parallel.c)
+						{
+							parallel.fix(3);
+						}
+						else if (pressedEdge.Item1 == parallel.d)
+						{
+							parallel.fix(4);
+						}
+					}
+				}
+
+				constraints = doesVertexHasConstraints(pressedEdge.Item2);
+
+				foreach (Constraint constraint in constraints)
+				{
+					if (constraint is Parallel)
+					{
+						Parallel parallel = (Parallel)constraint;
+
+						if (pressedEdge.Item2 == parallel.a)
+						{
+							parallel.fix(1);
+						}
+						else if (pressedEdge.Item2 == parallel.b)
+						{
+							parallel.fix(2);
+						}
+						else if (pressedEdge.Item2 == parallel.c)
+						{
+							parallel.fix(3);
+						}
+						else if (pressedEdge.Item2 == parallel.d)
+						{
+							parallel.fix(4);
+						}
+					}
+				}
+
 				reDraw();
 			}
 
-			if (mouseDown == true)
+			/*if (mouseDown == true)
 			{
-				foreach(Parallel con in parallelConstraints)
+				foreach (Parallel con in parallelConstraints)
 				{
 					if (!con.isValid())
 					{
-						con.fix(1);
-						/*reDraw();*/
+						con.fix(1, this.label1);
+						reDraw();
 					}
 				}
-			}
+			}*/
 		}
 
 		private (Polygon?, int) findPolygonByVertex(Vertex vert)
@@ -711,6 +918,59 @@ namespace Polygon_editor
 			return null;
 		}
 
+		private List<Constraint> doesVertexHasConstraints(Vertex a)
+		{
+			List<Constraint> constraintsForVertex = new List<Constraint>();
+
+			foreach (SameLenght constraint in sameLenghtConstraints)
+			{
+				if (constraint.containsVertex(a))
+				{
+					constraintsForVertex.Add(constraint);
+				}
+			}
+
+			foreach (Parallel constraint in parallelConstraints)
+			{
+				if (constraint.containsVertex(a))
+				{
+					constraintsForVertex.Add(constraint);
+				}
+			}
+
+			return constraintsForVertex;
+		}
+
+		private List<SameLenght> doesVertexHasSameLengthConstraint(Vertex a)
+		{
+			List<SameLenght> sameLenghtsConstraintsForVertex = new List<SameLenght>();
+
+			foreach (SameLenght constraint in sameLenghtConstraints)
+			{
+				if (constraint.containsVertex(a))
+				{
+					sameLenghtsConstraintsForVertex.Add(constraint);
+				}
+			}
+
+			return sameLenghtsConstraintsForVertex;
+		}
+
+		private List<Parallel> doesVertexHasParallelConstraint(Vertex a)
+		{
+			List<Parallel> parallelConstraintsForVertex = new List<Parallel>();
+
+			foreach (Parallel constraint in parallelConstraints)
+			{
+				if (constraint.containsVertex(a))
+				{
+					parallelConstraintsForVertex.Add(constraint);
+				}
+			}
+
+			return parallelConstraintsForVertex;
+		}
+
 		private HashSet<Vertex> fixedLengthVerticesList(Vertex a)
 		{
 			HashSet<Vertex> resultList = new HashSet<Vertex>();
@@ -797,6 +1057,21 @@ namespace Polygon_editor
 			reDraw();
 
 			pictureBox_workingArea.Refresh();
+		}
+
+		private void radioButton_defaultDrawing_CheckedChanged(object sender, EventArgs e)
+		{
+			reDraw();
+			this.label1.Text = "Changed drawing mode to";
+
+			if (this.radioButton_defaultDrawing.Checked == true)
+			{
+				this.label1.Text += " default";
+			}
+			else
+			{
+				this.label1.Text += " bresenham";
+			}
 		}
 	}
 }

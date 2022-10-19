@@ -41,7 +41,6 @@
 			this.radioButton_edgeVertex = new System.Windows.Forms.RadioButton();
 			this.radioButton_deleteVertex = new System.Windows.Forms.RadioButton();
 			this.radioButton_moveVertex = new System.Windows.Forms.RadioButton();
-			this.radioButton_editPolygon = new System.Windows.Forms.RadioButton();
 			this.radioButton_deletePolygon = new System.Windows.Forms.RadioButton();
 			this.radioButton_addPolygon = new System.Windows.Forms.RadioButton();
 			this.groupBox_drawMode = new System.Windows.Forms.GroupBox();
@@ -58,8 +57,8 @@
 			// tableLayoutPanel_main
 			// 
 			this.tableLayoutPanel_main.ColumnCount = 2;
-			this.tableLayoutPanel_main.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 75F));
-			this.tableLayoutPanel_main.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 25F));
+			this.tableLayoutPanel_main.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
+			this.tableLayoutPanel_main.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 200F));
 			this.tableLayoutPanel_main.Controls.Add(this.tableLayoutPanel_right, 1, 0);
 			this.tableLayoutPanel_main.Controls.Add(this.pictureBox_workingArea, 0, 0);
 			this.tableLayoutPanel_main.Dock = System.Windows.Forms.DockStyle.Fill;
@@ -80,8 +79,8 @@
 			this.tableLayoutPanel_right.Location = new System.Drawing.Point(603, 3);
 			this.tableLayoutPanel_right.Name = "tableLayoutPanel_right";
 			this.tableLayoutPanel_right.RowCount = 2;
-			this.tableLayoutPanel_right.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 77.56232F));
-			this.tableLayoutPanel_right.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 22.43767F));
+			this.tableLayoutPanel_right.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 82F));
+			this.tableLayoutPanel_right.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 18F));
 			this.tableLayoutPanel_right.Size = new System.Drawing.Size(194, 444);
 			this.tableLayoutPanel_right.TabIndex = 1;
 			// 
@@ -97,13 +96,12 @@
 			this.groupBox_edit.Controls.Add(this.radioButton_edgeVertex);
 			this.groupBox_edit.Controls.Add(this.radioButton_deleteVertex);
 			this.groupBox_edit.Controls.Add(this.radioButton_moveVertex);
-			this.groupBox_edit.Controls.Add(this.radioButton_editPolygon);
 			this.groupBox_edit.Controls.Add(this.radioButton_deletePolygon);
 			this.groupBox_edit.Controls.Add(this.radioButton_addPolygon);
 			this.groupBox_edit.Dock = System.Windows.Forms.DockStyle.Fill;
 			this.groupBox_edit.Location = new System.Drawing.Point(3, 3);
 			this.groupBox_edit.Name = "groupBox_edit";
-			this.groupBox_edit.Size = new System.Drawing.Size(188, 338);
+			this.groupBox_edit.Size = new System.Drawing.Size(188, 358);
 			this.groupBox_edit.TabIndex = 0;
 			this.groupBox_edit.TabStop = false;
 			this.groupBox_edit.Text = "Edit";
@@ -111,7 +109,7 @@
 			// radioButton_deleteConstraint
 			// 
 			this.radioButton_deleteConstraint.AutoSize = true;
-			this.radioButton_deleteConstraint.Location = new System.Drawing.Point(6, 312);
+			this.radioButton_deleteConstraint.Location = new System.Drawing.Point(6, 333);
 			this.radioButton_deleteConstraint.Name = "radioButton_deleteConstraint";
 			this.radioButton_deleteConstraint.Size = new System.Drawing.Size(114, 19);
 			this.radioButton_deleteConstraint.TabIndex = 10;
@@ -122,7 +120,7 @@
 			// radioButton_parallel
 			// 
 			this.radioButton_parallel.AutoSize = true;
-			this.radioButton_parallel.Location = new System.Drawing.Point(6, 287);
+			this.radioButton_parallel.Location = new System.Drawing.Point(6, 308);
 			this.radioButton_parallel.Name = "radioButton_parallel";
 			this.radioButton_parallel.Size = new System.Drawing.Size(117, 19);
 			this.radioButton_parallel.TabIndex = 1;
@@ -132,9 +130,11 @@
 			// 
 			// button_clear
 			// 
-			this.button_clear.Location = new System.Drawing.Point(113, 228);
+			this.button_clear.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+			this.button_clear.Location = new System.Drawing.Point(6, 249);
 			this.button_clear.Name = "button_clear";
-			this.button_clear.Size = new System.Drawing.Size(75, 23);
+			this.button_clear.Size = new System.Drawing.Size(75, 28);
 			this.button_clear.TabIndex = 9;
 			this.button_clear.Text = "Clear";
 			this.button_clear.UseVisualStyleBackColor = true;
@@ -143,7 +143,7 @@
 			// radioButton_sameLength
 			// 
 			this.radioButton_sameLength.AutoSize = true;
-			this.radioButton_sameLength.Location = new System.Drawing.Point(6, 262);
+			this.radioButton_sameLength.Location = new System.Drawing.Point(6, 283);
 			this.radioButton_sameLength.Name = "radioButton_sameLength";
 			this.radioButton_sameLength.Size = new System.Drawing.Size(91, 19);
 			this.radioButton_sameLength.TabIndex = 0;
@@ -154,7 +154,7 @@
 			// label1
 			// 
 			this.label1.AutoSize = true;
-			this.label1.Location = new System.Drawing.Point(6, 232);
+			this.label1.Location = new System.Drawing.Point(6, 225);
 			this.label1.Name = "label1";
 			this.label1.Size = new System.Drawing.Size(38, 15);
 			this.label1.TabIndex = 8;
@@ -163,7 +163,7 @@
 			// radioButton_movePolygon
 			// 
 			this.radioButton_movePolygon.AutoSize = true;
-			this.radioButton_movePolygon.Location = new System.Drawing.Point(6, 197);
+			this.radioButton_movePolygon.Location = new System.Drawing.Point(6, 131);
 			this.radioButton_movePolygon.Name = "radioButton_movePolygon";
 			this.radioButton_movePolygon.Size = new System.Drawing.Size(102, 19);
 			this.radioButton_movePolygon.TabIndex = 7;
@@ -173,7 +173,7 @@
 			// radioButton_moveEdge
 			// 
 			this.radioButton_moveEdge.AutoSize = true;
-			this.radioButton_moveEdge.Location = new System.Drawing.Point(6, 172);
+			this.radioButton_moveEdge.Location = new System.Drawing.Point(6, 106);
 			this.radioButton_moveEdge.Name = "radioButton_moveEdge";
 			this.radioButton_moveEdge.Size = new System.Drawing.Size(84, 19);
 			this.radioButton_moveEdge.TabIndex = 6;
@@ -183,7 +183,7 @@
 			// radioButton_edgeVertex
 			// 
 			this.radioButton_edgeVertex.AutoSize = true;
-			this.radioButton_edgeVertex.Location = new System.Drawing.Point(6, 147);
+			this.radioButton_edgeVertex.Location = new System.Drawing.Point(6, 47);
 			this.radioButton_edgeVertex.Name = "radioButton_edgeVertex";
 			this.radioButton_edgeVertex.Size = new System.Drawing.Size(148, 19);
 			this.radioButton_edgeVertex.TabIndex = 5;
@@ -193,7 +193,7 @@
 			// radioButton_deleteVertex
 			// 
 			this.radioButton_deleteVertex.AutoSize = true;
-			this.radioButton_deleteVertex.Location = new System.Drawing.Point(6, 122);
+			this.radioButton_deleteVertex.Location = new System.Drawing.Point(6, 165);
 			this.radioButton_deleteVertex.Name = "radioButton_deleteVertex";
 			this.radioButton_deleteVertex.Size = new System.Drawing.Size(93, 19);
 			this.radioButton_deleteVertex.TabIndex = 4;
@@ -203,27 +203,17 @@
 			// radioButton_moveVertex
 			// 
 			this.radioButton_moveVertex.AutoSize = true;
-			this.radioButton_moveVertex.Location = new System.Drawing.Point(6, 97);
+			this.radioButton_moveVertex.Location = new System.Drawing.Point(6, 81);
 			this.radioButton_moveVertex.Name = "radioButton_moveVertex";
 			this.radioButton_moveVertex.Size = new System.Drawing.Size(90, 19);
 			this.radioButton_moveVertex.TabIndex = 3;
 			this.radioButton_moveVertex.Text = "Move vertex";
 			this.radioButton_moveVertex.UseVisualStyleBackColor = true;
 			// 
-			// radioButton_editPolygon
-			// 
-			this.radioButton_editPolygon.AutoSize = true;
-			this.radioButton_editPolygon.Location = new System.Drawing.Point(6, 72);
-			this.radioButton_editPolygon.Name = "radioButton_editPolygon";
-			this.radioButton_editPolygon.Size = new System.Drawing.Size(121, 19);
-			this.radioButton_editPolygon.TabIndex = 2;
-			this.radioButton_editPolygon.Text = "(NO) Edit polygon";
-			this.radioButton_editPolygon.UseVisualStyleBackColor = true;
-			// 
 			// radioButton_deletePolygon
 			// 
 			this.radioButton_deletePolygon.AutoSize = true;
-			this.radioButton_deletePolygon.Location = new System.Drawing.Point(6, 47);
+			this.radioButton_deletePolygon.Location = new System.Drawing.Point(6, 190);
 			this.radioButton_deletePolygon.Name = "radioButton_deletePolygon";
 			this.radioButton_deletePolygon.Size = new System.Drawing.Size(105, 19);
 			this.radioButton_deletePolygon.TabIndex = 1;
@@ -248,9 +238,9 @@
 			this.groupBox_drawMode.Controls.Add(this.radioButton_defaultDrawing);
 			this.groupBox_drawMode.Controls.Add(this.radioButton_bresenham);
 			this.groupBox_drawMode.Dock = System.Windows.Forms.DockStyle.Fill;
-			this.groupBox_drawMode.Location = new System.Drawing.Point(3, 347);
+			this.groupBox_drawMode.Location = new System.Drawing.Point(3, 367);
 			this.groupBox_drawMode.Name = "groupBox_drawMode";
-			this.groupBox_drawMode.Size = new System.Drawing.Size(188, 94);
+			this.groupBox_drawMode.Size = new System.Drawing.Size(188, 74);
 			this.groupBox_drawMode.TabIndex = 1;
 			this.groupBox_drawMode.TabStop = false;
 			this.groupBox_drawMode.Text = "Drawing mode";
@@ -266,6 +256,7 @@
 			this.radioButton_defaultDrawing.TabStop = true;
 			this.radioButton_defaultDrawing.Text = "Default drawing mode";
 			this.radioButton_defaultDrawing.UseVisualStyleBackColor = true;
+			this.radioButton_defaultDrawing.CheckedChanged += new System.EventHandler(this.radioButton_defaultDrawing_CheckedChanged);
 			// 
 			// radioButton_bresenham
 			// 
@@ -315,7 +306,6 @@
 		private GroupBox groupBox_edit;
 		private RadioButton radioButton_deletePolygon;
 		private RadioButton radioButton_addPolygon;
-		private RadioButton radioButton_editPolygon;
 		private TableLayoutPanel tableLayoutPanel_right;
 		private RadioButton radioButton_movePolygon;
 		private RadioButton radioButton_moveEdge;

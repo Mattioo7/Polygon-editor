@@ -60,7 +60,7 @@ namespace Polygon_editor
 			this.d = d;
 		}
 		
-		public override void fix(int edgeNr)
+		public void fix(int vertexNumber, Label label)
 		{
 			double len = segmentLength(a.p, b.p);
 			double len2 = segmentLength(c.p, d.p);
@@ -71,17 +71,22 @@ namespace Polygon_editor
 
 				v.X = (int)(Math.Round(v.X * wsp));
 				v.Y = (int)(Math.Round(v.Y * wsp));
+
 				if (Angle(a.p, b.p, c.p, d.p) > 0)
 				{
 					d.p.X = c.p.X + v.X;
 					d.p.Y = c.p.Y + v.Y;
+					label.Text = "dodatni";
 				}
 				else
 				{
 					d.p.X = c.p.X - v.X;
 					d.p.Y = c.p.Y - v.Y;
+					label.Text = "ujemny";
 				}
 			}
+
+
 		}
 
 		public override bool isValid()
@@ -126,6 +131,73 @@ namespace Polygon_editor
 			return diff1.X * diff2.X + diff1.Y * diff2.Y;
 		}
 
+		public bool containsVertex(Vertex v)
+		{
+			return v == a || v == b || v == c || v == d;
+		}
+
+		public override void fix(int nr)
+		{
+			if (nr == 2)
+			{
+				// b <-> a
+				// c <-> d
+				Vertex temp = b;
+				b = a;
+				a = temp;
+
+				temp = c;
+				c = d;
+				d = temp;
+			}
+			else if (nr == 3)
+			{
+				// a <-> c
+				// b <-> d
+				Vertex temp = a;
+				a = c;
+				c = temp;
+
+				temp = b;
+				b = d;
+				d = temp;
+			}
+			else if (nr == 4)
+			{
+				// a <-> d
+				// b <-> c
+				Vertex temp = a;
+				a = d;
+				d = temp;
+
+				temp = b;
+				b = c;
+				c = temp;
+			}
+
+			double len = segmentLength(a.p, b.p);
+			double len2 = segmentLength(c.p, d.p);
+			double wsp = len2 / len;
+			if (len >= 0.01)
+			{
+				Point v = new Point(b.p.X - a.p.X, b.p.Y - a.p.Y);
+
+				v.X = (int)(Math.Round(v.X * wsp));
+				v.Y = (int)(Math.Round(v.Y * wsp));
+
+				if (Angle(a.p, b.p, c.p, d.p) > 0)
+				{
+					d.p.X = c.p.X + v.X;
+					d.p.Y = c.p.Y + v.Y;
+
+				}
+				else
+				{
+					d.p.X = c.p.X - v.X;
+					d.p.Y = c.p.Y - v.Y;
+				}
+			}
+		}
 	}
 
 }

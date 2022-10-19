@@ -10,12 +10,10 @@ namespace Polygon_editor
 	internal class Polygon
 	{
 		public List<Vertex> vertices;
-		public List<Constraint> constraints;
 
 		public Polygon()
 		{
 			vertices = new List<Vertex>();
-			constraints = new List<Constraint>();
 		}
 
 
