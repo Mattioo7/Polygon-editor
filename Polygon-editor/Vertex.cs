@@ -10,20 +10,16 @@ namespace Polygon_editor
 	{
 		public Point p;
 		public Brush brush;
-		//public int constraint_id;
-		//public ConstraintType following_edge_constrain;
 
 		public Vertex(Point point)
 		{
 			p = point;
 			brush = Brushes.Black;
-			//following_edge_constrain = ConstraintType.NONE;
 		}
 		public Vertex(Point point, Brush br)
 		{
 			p = point;
 			brush = br;
-			//following_edge_constrain = ConstraintType.NONE;
 		}
 	}
 }

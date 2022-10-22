@@ -8,10 +8,27 @@ namespace Polygon_editor
 {
 	public partial class Form1 : Form
 	{
-		private void drawConstraintNumber(Vertex a, Vertex b, int drawnNumber, Brush brush)
+		private void drawConstraintNumberLength(Vertex a, Vertex b, int drawnNumber, Brush brush)
 		{
-			// tutaj dodać, aby grapich było podawane z góry
+			Point midPoint = new Point();
+			midPoint.Y = (a.p.Y + b.p.Y) / 2;
+			midPoint.X = (a.p.X + b.p.X) / 2;
 
+			using (Graphics g = Graphics.FromImage(drawArea))
+			{
+				g.FillRectangle(brush, midPoint.X - RADIUS_OF_MARKER + 2, midPoint.Y - RADIUS_OF_MARKER + 2, (RADIUS_OF_MARKER - 2) * 2, (RADIUS_OF_MARKER - 2) * 2);
+				g.DrawString(drawnNumber.ToString(),
+					new Font("Ink Free", RADIUS_OF_MARKER, FontStyle.Bold),
+					new SolidBrush(Color.Yellow),
+					midPoint.X, midPoint.Y,
+					new StringFormat()
+					{ Alignment = StringAlignment.Center, LineAlignment = StringAlignment.Center });
+
+			}
+		}
+
+		private void drawConstraintNumberParallel(Vertex a, Vertex b, int drawnNumber, Brush brush)
+		{
 			Point midPoint = new Point();
 			midPoint.Y = (a.p.Y + b.p.Y) / 2;
 			midPoint.X = (a.p.X + b.p.X) / 2;
@@ -46,6 +63,8 @@ namespace Polygon_editor
 
 		private void drawLineBresenham(int x, int y, int x2, int y2, Graphics e, Brush b)
 		{
+			// TODO
+
 			//http://tech-algorithm.com/articles/drawing-line-using-bresenham-algorithm/
 			int w = x2 - x;
 			int h = y2 - y;
@@ -117,14 +136,12 @@ namespace Polygon_editor
 			}
 			for (int i = 0; i < sameLenghtConstraints.Count; ++i)
 			{
-				// drawSameLength
-
-				drawConstraintNumber(sameLenghtConstraints[i].a, sameLenghtConstraints[i].b, i + 1, Brushes.Gray);
+				drawConstraintNumberLength(sameLenghtConstraints[i].a, sameLenghtConstraints[i].b, i + 1, Brushes.Gray);
 			}
 			for (int i = 0; i < parallelConstraints.Count; ++i)
 			{
-				drawConstraintNumber(parallelConstraints[i].a, parallelConstraints[i].b, i + 1, Brushes.Green);
-				drawConstraintNumber(parallelConstraints[i].c, parallelConstraints[i].d, i + 1, Brushes.Green);
+				drawConstraintNumberParallel(parallelConstraints[i].a, parallelConstraints[i].b, i + 1, Brushes.Green);
+				drawConstraintNumberParallel(parallelConstraints[i].c, parallelConstraints[i].d, i + 1, Brushes.Green);
 			}
 			this.pictureBox_workingArea.Refresh();
 		}

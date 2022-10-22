@@ -35,7 +35,6 @@
 			this.radioButton_parallel = new System.Windows.Forms.RadioButton();
 			this.button_clear = new System.Windows.Forms.Button();
 			this.radioButton_sameLength = new System.Windows.Forms.RadioButton();
-			this.label1 = new System.Windows.Forms.Label();
 			this.radioButton_movePolygon = new System.Windows.Forms.RadioButton();
 			this.radioButton_moveEdge = new System.Windows.Forms.RadioButton();
 			this.radioButton_edgeVertex = new System.Windows.Forms.RadioButton();
@@ -90,7 +89,6 @@
 			this.groupBox_edit.Controls.Add(this.radioButton_parallel);
 			this.groupBox_edit.Controls.Add(this.button_clear);
 			this.groupBox_edit.Controls.Add(this.radioButton_sameLength);
-			this.groupBox_edit.Controls.Add(this.label1);
 			this.groupBox_edit.Controls.Add(this.radioButton_movePolygon);
 			this.groupBox_edit.Controls.Add(this.radioButton_moveEdge);
 			this.groupBox_edit.Controls.Add(this.radioButton_edgeVertex);
@@ -152,15 +150,6 @@
 			this.radioButton_sameLength.Text = "Same length";
 			this.radioButton_sameLength.UseVisualStyleBackColor = true;
 			this.radioButton_sameLength.CheckedChanged += new System.EventHandler(this.radioButton_sameLength_CheckedChanged);
-			// 
-			// label1
-			// 
-			this.label1.AutoSize = true;
-			this.label1.Location = new System.Drawing.Point(6, 225);
-			this.label1.Name = "label1";
-			this.label1.Size = new System.Drawing.Size(38, 15);
-			this.label1.TabIndex = 8;
-			this.label1.Text = "label1";
 			// 
 			// radioButton_movePolygon
 			// 
@@ -325,7 +314,6 @@
 		private RadioButton radioButton_defaultDrawing;
 		private RadioButton radioButton_bresenham;
 		private PictureBox pictureBox_workingArea;
-		private Label label1;
 		private Button button_clear;
 		private RadioButton radioButton_parallel;
 		private RadioButton radioButton_sameLength;

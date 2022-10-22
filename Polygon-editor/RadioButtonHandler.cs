@@ -21,16 +21,6 @@ namespace Polygon_editor
 		private void radioButton_defaultDrawing_CheckedChanged(object sender, EventArgs e)
 		{
 			reDraw();
-			this.label1.Text = "Changed drawing mode to";
-
-			if (this.radioButton_defaultDrawing.Checked == true)
-			{
-				this.label1.Text += " default";
-			}
-			else
-			{
-				this.label1.Text += " bresenham";
-			}
 		}
 
 		private void radioButton_edgeVertex_CheckedChanged(object sender, EventArgs e)

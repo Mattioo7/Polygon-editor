@@ -117,8 +117,6 @@ namespace Polygon_editor
 
 			} while (wasAdded == true);
 
-			this.radioButton_addPolygon.Text = "Add polygon (poly: " + polygons.Count + ", v in last: " + polygons.Last().vertices.Count;
-
 			return resultList;
 		}
 
@@ -153,8 +151,6 @@ namespace Polygon_editor
 				}
 
 			} while (wasAdded == true);
-
-			this.radioButton_addPolygon.Text = "Add polygon (poly: " + polygons.Count + ", v in last: " + polygons.Last().vertices.Count;
 
 			return resultList;
 		}

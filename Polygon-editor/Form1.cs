@@ -26,7 +26,6 @@ namespace Polygon_editor
 		public Form1()
 		{
 			InitializeComponent();
-
 			initializeEnviroment();
 		}
 
@@ -34,55 +33,44 @@ namespace Polygon_editor
 		{
 			if (this.radioButton_addPolygon.Checked)
 			{
-				this.label1.Text = "add polygon";
 				addPolygon(e);
 			}
 			else if (this.radioButton_deletePolygon.Checked)
 			{
-				this.label1.Text = "delete polygon";
 				deletePolygon(e);
 			}
 			else if (this.radioButton_moveVertex.Checked)
 			{
-				this.label1.Text = "move vertex";
 				moveVertex(e);
 			}
 			else if (this.radioButton_deleteVertex.Checked)
 			{
-				this.label1.Text = "delete vertex";
 				deleteVertex(e);
 			}
 			else if (this.radioButton_edgeVertex.Checked)
 			{
-				this.label1.Text = "edge vertex";
 				addVertexOnTheEdge(e);
 			}
 			else if (this.radioButton_moveEdge.Checked)
 			{
-				this.label1.Text = "move edge";
 				moveEdge(e);
 			}
 			else if (this.radioButton_movePolygon.Checked)
 			{
-				this.label1.Text = "move polygon";
 				movePolygon(e);
 			}
 			else if (this.radioButton_sameLength.Checked)
 			{
-				this.label1.Text = "same length";
 				addSameLengthConstraint(e);
 			}
 			else if (this.radioButton_parallel.Checked)
 			{
-				this.label1.Text = "parallel";
 				addParallelEdgesConstraint(e);
 			}
 			else if (this.radioButton_deleteConstraint.Checked)
 			{
-				this.label1.Text = "delete constraint";
 				deleteConstraint(e);
 			}
-
 		}
 
 		private void pictureBox_workingArea_MouseUp(object sender, MouseEventArgs e)
@@ -97,20 +85,15 @@ namespace Polygon_editor
 
 		public void pictureBox_workingArea_MouseMove(object sender, MouseEventArgs e)
 		{
-			// jeœli mouseDown oraz wybrany jest VertexMove to poruszamy wierzcho³kiem, któy jest klikniêty
 			if (this.radioButton_moveVertex.Checked && mouseDown == true && pressedVertex != null)
 			{
 				pressedVertex.p.X = e.X;
 				pressedVertex.p.Y = e.Y;
 
-				this.label1.Text = "cords: " + e.X.ToString() + ", " + e.Y.ToString();
-
-				// jeœli wierzcho³ek koñczy krawêdŸ, która ma fixed d³ugoœæ to ruszamy ca³¹ krawêdŸ
 				HashSet<Vertex> verticesToMove = fixedLengthVerticesList(pressedVertex);
 
 				foreach (Vertex vertex in verticesToMove)
 				{
-					// one sie nie usuwaja tylko s¹ w jednym miejscu
 					vertex.p.X += e.X - mousePosition.X;
 					vertex.p.Y += e.Y - mousePosition.Y;
 				};

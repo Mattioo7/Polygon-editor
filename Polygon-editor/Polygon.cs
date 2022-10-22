@@ -15,7 +15,5 @@ namespace Polygon_editor
 		{
 			vertices = new List<Vertex>();
 		}
-
-
 	}
 }

@@ -28,7 +28,6 @@ namespace Polygon_editor
 
 				if (yDiff_withFirst * yDiff_withFirst + xDiff_withFirst * xDiff_withFirst < 4 * (RADIUS + 1) * (RADIUS + 1))
 				{
-					// jesli klikam na pierwszy to domykam
 					numberOfVerticesInNewPolygon = 0;
 					using (Graphics g = Graphics.FromImage(this.drawArea))
 					{
@@ -179,11 +178,8 @@ namespace Polygon_editor
 
 			if (edge == (null, null, null))
 			{
-				this.label1.Text = "MISS!";
 				return;
 			}
-
-			this.label1.Text = "EDGE!";
 
 			Vertex a = edge.poly.vertices[(int)edge.a];
 			Vertex b = edge.poly.vertices[(int)edge.b];
@@ -253,10 +249,8 @@ namespace Polygon_editor
 
 			sameLenghtConstraints.Add(new SameLenght(a, b));
 
-			drawConstraintNumber(a, b, sameLenghtConstraints.Count, Brushes.Gray);
+			drawConstraintNumberLength(a, b, sameLenghtConstraints.Count, Brushes.Gray);
 			this.pictureBox_workingArea.Refresh();
-
-			this.label1.Text = "sameLen for: " + a.ToString() + " " + b.ToString();
 		}
 
 		private void addParallelEdgesConstraint(MouseEventArgs e)
@@ -264,9 +258,6 @@ namespace Polygon_editor
 			if (parallelEdges[0] == (null, null, null))
 			{
 				parallelEdges[0] = findEdge(e);
-
-				this.label1.Text = "edge1";
-
 				return;
 			}
 			else
@@ -286,11 +277,9 @@ namespace Polygon_editor
 
 					parallelEdges[0] = (null, null, null);
 					parallelEdges[1] = (null, null, null);
-					this.label1.Text = "null";
 					return;
 				}
 
-				this.label1.Text = "edge2";
 			}
 
 			if (parallelEdges[1] != (null, null, null))
@@ -305,7 +294,6 @@ namespace Polygon_editor
 				{
 					parallelConstraints.Last().fix(1);
 					reDraw();
-					this.label1.Text = "reDraw";
 				}
 
 				foreach (Parallel parallel in parallelConstraints)
@@ -331,8 +319,8 @@ namespace Polygon_editor
 				parallelEdges[0] = (null, null, null);
 				parallelEdges[1] = (null, null, null);
 
-				drawConstraintNumber(a, b, parallelConstraints.Count, Brushes.Green);
-				drawConstraintNumber(c, d, parallelConstraints.Count, Brushes.Green);
+				drawConstraintNumberParallel(a, b, parallelConstraints.Count, Brushes.Green);
+				drawConstraintNumberParallel(c, d, parallelConstraints.Count, Brushes.Green);
 				this.pictureBox_workingArea.Refresh();
 			}
 		}
