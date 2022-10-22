@@ -131,20 +131,6 @@ namespace Polygon_editor
 
 		private void addPolygon(MouseEventArgs e)
 		{
-			// klikam i sprawdzam czy to pierwszy
-
-			// pierwszy
-				// dodaje wierzcho³ek
-
-			// kolejny
-				// sprawdzam czy klikam na pierwszy
-					// zamykam
-				// inny ni¿ pierwszy 
-					// nie dodaje
-				// zaden 
-					// dodaje
-
-
 			if (numberOfVerticesInNewPolygon == 0)
 			{
 				polygons.Add(new Polygon());
@@ -434,7 +420,7 @@ namespace Polygon_editor
 				Vertex b = parallelEdges[0].poly.vertices[(int)parallelEdges[0].idxB];
 				Vertex c = parallelEdges[1].poly.vertices[(int)parallelEdges[1].idxA];
 				Vertex d = parallelEdges[1].poly.vertices[(int)parallelEdges[1].idxB];
-				parallelConstraints.Add(new Parallel(a, b, c, d));
+				parallelConstraints.Add(new Parallel(a, b, c, d, this));
 
 				if (!parallelConstraints.Last().isValid())
 				{
@@ -502,126 +488,13 @@ namespace Polygon_editor
 			reDraw();
 		}
 
-		private void drawConstraintNumber(Vertex a, Vertex b, int drawnNumber, Brush brush)
-		{
-			// tutaj dodaæ, aby grapich by³o podawane z góry
-
-			Point midPoint = new Point();
-			midPoint.Y = (a.p.Y + b.p.Y) / 2;
-			midPoint.X = (a.p.X + b.p.X) / 2;
-
-			using (Graphics g = Graphics.FromImage(drawArea))
-			{
-				g.FillEllipse(brush, midPoint.X - RADIUS_OF_MARKER + 2, midPoint.Y - RADIUS_OF_MARKER + 2, (RADIUS_OF_MARKER - 2) * 2, (RADIUS_OF_MARKER - 2) * 2);
-				g.DrawString(drawnNumber.ToString(),
-					new Font("Ink Free", RADIUS_OF_MARKER, FontStyle.Bold),
-					new SolidBrush(Color.Yellow),
-					midPoint.X, midPoint.Y,
-					new StringFormat()
-					{ Alignment = StringAlignment.Center, LineAlignment = StringAlignment.Center });
-
-			}
-		}
-
-		private void drawLine(Point a, Point b, Graphics e, Brush br)
-		{
-			if (this.radioButton_bresenham.Checked)
-			{
-				drawLineBresenham(a.X, a.Y, b.X, b.Y, e, br);
-			}
-			else
-			{
-				using (Graphics g = Graphics.FromImage(this.drawArea))
-				{
-					g.DrawLine(pen, a, b);
-				}
-			}
-		}
-
-		private void drawLineBresenham(int x, int y, int x2, int y2, Graphics e, Brush b)
-		{
-			//http://tech-algorithm.com/articles/drawing-line-using-bresenham-algorithm/
-			int w = x2 - x;
-			int h = y2 - y;
-			int dx1 = 0, dy1 = 0, dx2 = 0, dy2 = 0;
-			if (w < 0) dx1 = -1; else if (w > 0) dx1 = 1;
-			if (h < 0) dy1 = -1; else if (h > 0) dy1 = 1;
-			if (w < 0) dx2 = -1; else if (w > 0) dx2 = 1;
-			try
-			{
-				int longest = Math.Abs(w);
-				int shortest = Math.Abs(h);
-				if (!(longest > shortest))
-				{
-					longest = Math.Abs(h);
-					shortest = Math.Abs(w);
-					if (h < 0) dy2 = -1; else if (h > 0) dy2 = 1;
-					dx2 = 0;
-				}
-				int numerator = longest >> 1;
-				for (int i = 0; i <= longest; i++)
-				{
-					drawPixel(x, y, e, b);
-					numerator += shortest;
-					if (!(numerator < longest))
-					{
-						numerator -= longest;
-						x += dx1;
-						y += dy1;
-					}
-					else
-					{
-						x += dx2;
-						y += dy2;
-					}
-				}
-			}
-			catch (Exception ex)
-			{
-				return;
-			}
-		}
-
-		private void drawPixel(int x, int y, Graphics g, Brush b)
-		{
-			g.FillRectangle(b, x, y, 1, 1);
-		}
-
-		private void reDraw()
-		{
-			using (Graphics g = Graphics.FromImage(this.drawArea))
-			{
-				g.Clear(Color.AliceBlue);
-				foreach (Polygon poly in this.polygons)
-				{
-					for (int i = 0; i < poly.vertices.Count; ++i)
-					{
-						drawLine(poly.vertices[i].p, poly.vertices[(poly.vertices.Count + i - 1) % poly.vertices.Count].p, g, Brushes.Black);
-						g.FillEllipse(Brushes.Black, poly.vertices[i].p.X - RADIUS + 2, poly.vertices[i].p.Y - RADIUS + 2, (RADIUS - 2) * 2, (RADIUS - 2) * 2);
-					}
-				}
-			}
-			for (int i = 0; i < sameLenghtConstraints.Count; ++i)
-			{
-				// drawSameLength
-
-				drawConstraintNumber(sameLenghtConstraints[i].a, sameLenghtConstraints[i].b, i + 1, Brushes.Gray);
-			}
-			for (int i = 0; i < parallelConstraints.Count; ++i)
-			{
-				drawConstraintNumber(parallelConstraints[i].a, parallelConstraints[i].b, i + 1, Brushes.Green);
-				drawConstraintNumber(parallelConstraints[i].c, parallelConstraints[i].d, i + 1, Brushes.Green);
-			}
-			this.pictureBox_workingArea.Refresh();
-		}
-
 		private void button_clear_Click(object sender, EventArgs e)
 		{
 			initializeEnviroment(); 
 			this.pictureBox_workingArea.Refresh();
 		}
 
-		private void pictureBox_workingArea_MouseMove(object sender, MouseEventArgs e)
+		public void pictureBox_workingArea_MouseMove(object sender, MouseEventArgs e)
 		{
 			// jeœli mouseDown oraz wybrany jest VertexMove to poruszamy wierzcho³kiem, któy jest klikniêty
 			if (this.radioButton_moveVertex.Checked && mouseDown == true && pressedVertex != null)
@@ -632,7 +505,6 @@ namespace Polygon_editor
 				this.label1.Text = "cords: " + e.X.ToString() + ", " + e.Y.ToString();
 
 				// jeœli wierzcho³ek koñczy krawêdŸ, która ma fixed d³ugoœæ to ruszamy ca³¹ krawêdŸ
-				// mam nadziejê, ¿e bêdzie to propagowaæ
 				HashSet<Vertex> verticesToMove = fixedLengthVerticesList(pressedVertex);
 
 				foreach (Vertex vertex in verticesToMove)
@@ -764,124 +636,14 @@ namespace Polygon_editor
 				{
 					if (!con.isValid())
 					{
-						con.fix(1, this.label1);
+						con.fix(1);
 						reDraw();
 					}
 				}
 			}*/
 		}
 
-		private (Polygon?, int) findPolygonByVertex(Vertex vert)
-		{
-			Polygon? polygon = null;
-			int index = -1;
 
-			foreach (Polygon poly in this.polygons)
-			{
-				if (polygon != null)
-				{
-					break;
-				}
-
-				for (int i = 0; i < poly.vertices.Count; ++i)
-				{
-					if (poly.vertices[i] == vert)
-					{
-						polygon = poly;
-						index = i;
-						break;
-					}
-				}
-			}
-
-			return (polygon, index);
-		}
-
-		private Polygon? findPolygonByMouse(MouseEventArgs e)
-		{
-			Polygon? polygon = null;
-
-			foreach (Polygon poly in this.polygons)
-			{
-				if (polygon != null)
-				{
-					break;
-				}
-
-				foreach (Vertex v in poly.vertices)
-				{
-					int yDiff = Math.Abs(v.p.Y - e.Y);
-					int xDiff = Math.Abs(v.p.X - e.X);
-
-					if (yDiff * yDiff + xDiff * xDiff < 4 * (RADIUS + 1) * (RADIUS + 1))
-					{
-						polygon = poly;
-						break;
-					}
-				}
-			}
-
-			return polygon;
-		}
-
-		private Vertex? findVertex(MouseEventArgs e)
-		{
-			Vertex? foundVertex = null;
-
-			foreach (Polygon poly in this.polygons)
-			{
-				if (foundVertex != null)
-				{
-					break;
-				}
-
-				foreach (Vertex v in poly.vertices)
-				{
-					int yDiff = Math.Abs(v.p.Y - e.Y);
-					int xDiff = Math.Abs(v.p.X - e.X);
-
-					if (yDiff * yDiff + xDiff * xDiff < 4 * (RADIUS + 1) * (RADIUS + 1))
-					{
-						foundVertex = v;
-						break;
-					}
-				}
-			}
-
-			return foundVertex;
-		}
-
-		private (int?, int?, Polygon?) findEdge(MouseEventArgs e)
-		{
-			(int?, int?, Polygon?) edge = (null, null, null);
-
-
-			foreach (Polygon poly in this.polygons)
-			{
-				if (edge != (null, null, null))
-				{
-					break;
-				}
-
-				for (int i = 0; i < poly.vertices.Count; ++i)
-				{
-					Vertex prev = poly.vertices[(poly.vertices.Count + i - 1) % poly.vertices.Count];
-					Vertex next = poly.vertices[i];
-
-					double AB = Math.Sqrt(Math.Pow(prev.p.X - next.p.X, 2) + Math.Pow(prev.p.Y - next.p.Y, 2));
-					double AP = Math.Sqrt(Math.Pow(prev.p.X - e.X, 2) + Math.Pow(prev.p.Y - e.Y, 2));
-					double PB = Math.Sqrt(Math.Pow(next.p.X - e.X, 2) + Math.Pow(next.p.Y - e.Y, 2));
-
-					if (AP == 0 || PB == 0 || (AP + PB) < (AB + 0.5) )
-					{
-						edge = ((poly.vertices.Count + i - 1) % poly.vertices.Count, i, poly);
-						break;
-					}
-				}
-			}
-
-			return edge;
-		}
 
 		private Constraint? doesEdgeHasConstraint(Vertex a, Vertex b)
 		{
@@ -931,7 +693,7 @@ namespace Polygon_editor
 			return constraintsForVertex;
 		}
 
-		private List<SameLenght> doesVertexHasSameLengthConstraint(Vertex a)
+		internal List<SameLenght> doesVertexHasSameLengthConstraint(Vertex a)
 		{
 			List<SameLenght> sameLenghtsConstraintsForVertex = new List<SameLenght>();
 
@@ -1117,6 +879,18 @@ namespace Polygon_editor
 		private void radioButton_deleteConstraint_CheckedChanged(object sender, EventArgs e)
 		{
 			clearVariables();
+		}
+
+		private void pictureBox_workingArea_MouseClick(object sender, MouseEventArgs e)
+		{
+			foreach (Parallel con in parallelConstraints)
+			{
+				if (!con.isValid())
+				{
+					con.fix(1);
+					reDraw();
+				}
+			}
 		}
 	}
 }
