@@ -18,11 +18,6 @@ namespace Polygon_editor
 			}
 		}
 
-		private void radioButton_defaultDrawing_CheckedChanged(object sender, EventArgs e)
-		{
-			reDraw();
-		}
-
 		private void radioButton_edgeVertex_CheckedChanged(object sender, EventArgs e)
 		{
 			clearVariables();
@@ -66,6 +61,11 @@ namespace Polygon_editor
 		private void radioButton_deleteConstraint_CheckedChanged(object sender, EventArgs e)
 		{
 			clearVariables();
+		}
+
+		private void radioButton_defaultDrawing_CheckedChanged(object sender, EventArgs e)
+		{
+			reDraw();
 		}
 	}
 }

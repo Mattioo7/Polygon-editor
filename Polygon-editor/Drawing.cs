@@ -109,7 +109,7 @@ namespace Polygon_editor
 
 		private void drawPixel(int x, int y, Graphics g, Brush b)
 		{
-			g.FillRectangle(b, x, y, 1, 1);
+			g.FillRectangle(Brushes.DarkGoldenrod, x, y, 1, 1);
 		}
 
 		private void reDraw()
@@ -130,6 +130,9 @@ namespace Polygon_editor
 					for (int i = 0; i < poly.vertices.Count; ++i)
 					{
 						drawLine(poly.vertices[i].p, poly.vertices[(poly.vertices.Count + i - 1) % poly.vertices.Count].p, g, Brushes.Black);
+					}
+					for (int i = 0; i < poly.vertices.Count; ++i)
+					{
 						g.FillEllipse(Brushes.Black, poly.vertices[i].p.X - RADIUS + 2, poly.vertices[i].p.Y - RADIUS + 2, (RADIUS - 2) * 2, (RADIUS - 2) * 2);
 					}
 				}

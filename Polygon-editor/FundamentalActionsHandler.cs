@@ -208,7 +208,7 @@ namespace Polygon_editor
 
 			if (edge != (null, null, null))
 			{
-				pressedEdge = (edge.poly.vertices[(int)edge.a], edge.poly.vertices[(int)edge.b]);
+				pressedEdge = (edge.poly.vertices[(int)edge.a], edge.poly.vertices[(int)edge.b], edge.poly);
 
 				mouseDown = true;
 				mousePosition.X = e.X;
@@ -220,6 +220,12 @@ namespace Polygon_editor
 		{
 			pressedVertex = findVertex(e);
 			pressedPolygon = findPolygonByMouse(e);
+
+			if (pressedPolygon == null)
+			{
+				(int? idxA, int? idxB, Polygon? poly) = findEdge(e);
+				pressedPolygon = poly;
+			}
 
 			if (this.radioButton_movePolygon.Checked && pressedPolygon != null)
 			{
@@ -245,7 +251,7 @@ namespace Polygon_editor
 				return;
 			}
 
-			pressedEdge = (a, b);
+			pressedEdge = (a, b, edge.poly);
 
 			sameLenghtConstraints.Add(new SameLenght(a, b));
 

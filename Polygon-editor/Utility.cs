@@ -35,7 +35,7 @@ namespace Polygon_editor
 			numberOfVerticesInNewPolygon = 0;
 			mouseDown = false;
 			pressedVertex = null;
-			pressedEdge = (null, null);
+			pressedEdge = (null, null, null);
 			parallelEdges[0] = (null, null, null);
 			parallelEdges[1] = (null, null, null);
 			pressedPolygon = null;

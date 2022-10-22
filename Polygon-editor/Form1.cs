@@ -18,7 +18,7 @@ namespace Polygon_editor
 		private const int RADIUS_OF_MARKER = 16;
 		private bool mouseDown;
 		private Vertex? pressedVertex;
-		private (Vertex?, Vertex?) pressedEdge;
+		private (Vertex? a, Vertex? b, Polygon? poly) pressedEdge;
 		private (int? idxA, int? idxB, Polygon? poly)[] parallelEdges;
 		private Polygon? pressedPolygon;
 		private Point mousePosition;
@@ -143,7 +143,7 @@ namespace Polygon_editor
 
 				reDraw();
 			}
-			else if (this.radioButton_moveEdge.Checked && mouseDown == true && pressedEdge != (null, null))
+			else if (this.radioButton_moveEdge.Checked && mouseDown == true && pressedEdge != (null, null, null))
 			{
 				HashSet<Vertex> verticesToMove = fixedLengthVerticesList(pressedEdge.Item1, pressedEdge.Item2);
 
@@ -213,18 +213,6 @@ namespace Polygon_editor
 
 				reDraw();
 			}
-
-			/*if (mouseDown == true)
-			{
-				foreach (Parallel con in parallelConstraints)
-				{
-					if (!con.isValid())
-					{
-						con.fix(1);
-						reDraw();
-					}
-				}
-			}*/
 		}
 
 		private void Form1_SizeChanged(object sender, EventArgs e)
