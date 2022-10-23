@@ -144,6 +144,26 @@ namespace Polygon_editor
 								pressedPolygon = findPolygonByMouse(e);
 								movePolygonMode = true;
 								return;
+
+								/*Parallel parallel = ((Parallel)constraint);
+
+								if (vertex == parallel.a)
+								{
+									parallel.fix(1);
+								}
+								else if (vertex == parallel.b)
+								{
+									parallel.fix(2);
+								}
+								else if (vertex == parallel.c)
+								{
+									parallel.fix(3);
+								}
+								else if (vertex == parallel.d)
+								{
+									parallel.fix(4);
+								}*/
+
 							}
 						}
 					}

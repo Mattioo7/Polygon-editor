@@ -277,10 +277,18 @@ namespace Polygon_editor
 			if (parallelEdges[0] == (null, null, null))
 			{
 				parallelEdges[0] = findEdge(e);
+
 				return;
 			}
 			else
 			{
+				if (doesEdgeHasConstraint(parallelEdges[0].poly.vertices[(int)parallelEdges[0].idxA], parallelEdges[0].poly.vertices[(int)parallelEdges[0].idxB]) != null)
+				{
+					parallelEdges[0] = (null, null, null);
+					parallelEdges[1] = (null, null, null);
+					return;
+				}
+
 				parallelEdges[1] = findEdge(e);
 
 				if (parallelEdges[1] == parallelEdges[0])
@@ -302,6 +310,13 @@ namespace Polygon_editor
 
 			if (parallelEdges[1] != (null, null, null))
 			{
+				if (doesEdgeHasConstraint(parallelEdges[1].poly.vertices[(int)parallelEdges[1].idxA], parallelEdges[1].poly.vertices[(int)parallelEdges[1].idxB]) != null)
+				{
+					parallelEdges[0] = (null, null, null);
+					parallelEdges[1] = (null, null, null);
+					return;
+				}
+
 				Vertex a = parallelEdges[0].poly.vertices[(int)parallelEdges[0].idxA];
 				Vertex b = parallelEdges[0].poly.vertices[(int)parallelEdges[0].idxB];
 				Vertex c = parallelEdges[1].poly.vertices[(int)parallelEdges[1].idxA];
