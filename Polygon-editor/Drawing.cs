@@ -99,11 +99,6 @@ namespace Polygon_editor
 			}
 		}
 
-		private void drawPixel(int x, int y, Graphics g, Brush b)
-		{
-			g.FillRectangle(Brushes.DarkGoldenrod, x, y, 1, 1);
-		}
-
 		private void reDraw()
 		{
 			/*foreach (Parallel con in parallelConstraints)
