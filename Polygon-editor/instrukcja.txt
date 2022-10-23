@@ -1,0 +1,23 @@
+﻿# Instrukcja obsługi
+
+## Klawiszologia
+- Lewy przycisk myszy (LPM)
+
+## Wykonanie akcji
+- Zaznaczamy odpowiedni radio button na prawym panelu, a następnie myszką klikamy na obszar rysowania. 
+	Dodawanie:
+	- Klikamy w miejce, gdzie chcemy dodać wierzchołek.
+	Przesuwanie:
+	- Łapiemy za obiekt i trzymając myszkę przesuwamy go.
+	Usuwanie: 
+	- Po naciśnięciu na obiekt usuwa się on.
+	Ograniczenia:
+	- Klikamy na krawędź, której chcemy nadać ograniczenie. Pojawia się odpowiednie oznaczenie na krawędzi. Niebieski kwadrat dla ogr. na dłogść. Zielone kółko dla równoległości (po naciśnieciu na drugą krawędź dopiero)
+	
+## Algorytmy relacji
+
+### Ograniczenie na długość
+Oba końce takiej krawędzi przesuwane są o jednakowy wektor. 
+
+### Równoległość
+To ograniczenie zrealizowane jest jako referenacje do 4 wierzchołków. Po próbie przesuniecia wierzchołka należącego do ograniczenia wyznaczany jest wierzchołek, który zostaje odpowiednio przesunięty tak, aby działało to możliwie intuicyjnie oraz wydajnie.

@@ -123,6 +123,7 @@
 			// 
 			this.radioButton_deleteConstraint.AutoSize = true;
 			this.radioButton_deleteConstraint.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
+			this.radioButton_deleteConstraint.ForeColor = System.Drawing.SystemColors.ControlText;
 			this.radioButton_deleteConstraint.Location = new System.Drawing.Point(6, 277);
 			this.radioButton_deleteConstraint.Name = "radioButton_deleteConstraint";
 			this.radioButton_deleteConstraint.Size = new System.Drawing.Size(131, 23);
@@ -136,6 +137,7 @@
 			// 
 			this.radioButton_parallel.AutoSize = true;
 			this.radioButton_parallel.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
+			this.radioButton_parallel.ForeColor = System.Drawing.Color.Green;
 			this.radioButton_parallel.Location = new System.Drawing.Point(6, 252);
 			this.radioButton_parallel.Name = "radioButton_parallel";
 			this.radioButton_parallel.Size = new System.Drawing.Size(133, 23);
@@ -163,6 +165,7 @@
 			// 
 			this.radioButton_sameLength.AutoSize = true;
 			this.radioButton_sameLength.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
+			this.radioButton_sameLength.ForeColor = System.Drawing.Color.Blue;
 			this.radioButton_sameLength.Location = new System.Drawing.Point(6, 227);
 			this.radioButton_sameLength.Name = "radioButton_sameLength";
 			this.radioButton_sameLength.Size = new System.Drawing.Size(103, 23);
@@ -294,6 +297,7 @@
 			// 
 			this.radioButton_bresenham.AutoSize = true;
 			this.radioButton_bresenham.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
+			this.radioButton_bresenham.ForeColor = System.Drawing.Color.Brown;
 			this.radioButton_bresenham.Location = new System.Drawing.Point(6, 47);
 			this.radioButton_bresenham.Name = "radioButton_bresenham";
 			this.radioButton_bresenham.Size = new System.Drawing.Size(158, 23);

@@ -50,7 +50,7 @@ namespace Polygon_editor
 		{
 			if (this.radioButton_bresenham.Checked)
 			{
-				drawLineBresenham(a.X, a.Y, b.X, b.Y, color);
+				drawLineBresenham(a.X, a.Y, b.X, b.Y, Color.Brown);
 			}
 			else
 			{
@@ -147,7 +147,7 @@ namespace Polygon_editor
 			}
 			for (int i = 0; i < sameLenghtConstraints.Count; ++i)
 			{
-				drawConstraintNumberLength(sameLenghtConstraints[i].a, sameLenghtConstraints[i].b, i + 1, Brushes.Gray);
+				drawConstraintNumberLength(sameLenghtConstraints[i].a, sameLenghtConstraints[i].b, i + 1, Brushes.Blue);
 			}
 			for (int i = 0; i < parallelConstraints.Count; ++i)
 			{

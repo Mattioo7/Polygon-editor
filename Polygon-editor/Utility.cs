@@ -26,8 +26,8 @@ namespace Polygon_editor
 			mouseDown = false;
 			pressedVertex = null;
 			pressedPolygon = null;
-
 			parallelEdges = new (int?, int?, Polygon?)[2];
+			movePolygonMode = false;
 		}
 
 		private void clearVariables()
@@ -48,11 +48,11 @@ namespace Polygon_editor
 
 			Vertex v1 = new Vertex(new Point(175, 100));
 			Vertex v2 = new Vertex(new Point(100, 250));
-			Vertex v3 = new Vertex(new Point(340, 240));
-			Vertex v4 = new Vertex(new Point(250, 100));
+			Vertex v3 = new Vertex(new Point(350, 250));
+			Vertex v4 = new Vertex(new Point(425, 100));
 
 			Vertex v5 = new Vertex(new Point(580, 80));
-			Vertex v6 = new Vertex(new Point(480, 130));
+			Vertex v6 = new Vertex(new Point(480, 80));
 			Vertex v7 = new Vertex(new Point(480, 240));
 			Vertex v8 = new Vertex(new Point(580, 250));
 			Vertex v9 = new Vertex(new Point(660, 250));
@@ -62,10 +62,14 @@ namespace Polygon_editor
 			Vertex v12 = new Vertex(new Point(240, 380));
 			Vertex v13 = new Vertex(new Point(280, 490));
 
-			Vertex v14 = new Vertex(new Point(390, 490));
-			Vertex v15 = new Vertex(new Point(400, 370));
+			Vertex v14 = new Vertex(new Point(400, 490));
+			Vertex v15 = new Vertex(new Point(400, 380));
 			Vertex v16 = new Vertex(new Point(530, 380));
-			Vertex v17 = new Vertex(new Point(530, 490));
+			Vertex v17 = new Vertex(new Point(530, 300));
+			Vertex v18 = new Vertex(new Point(720, 300));
+			Vertex v19 = new Vertex(new Point(720, 420));
+			Vertex v20 = new Vertex(new Point(610, 420));
+			Vertex v21 = new Vertex(new Point(530, 490));
 
 			polygons.Add(new Polygon());
 			polygons[0].vertices.Add(v1);
@@ -91,10 +95,15 @@ namespace Polygon_editor
 			polygons[3].vertices.Add(v15);
 			polygons[3].vertices.Add(v16);
 			polygons[3].vertices.Add(v17);
+			polygons[3].vertices.Add(v18);
+			polygons[3].vertices.Add(v19);
+			polygons[3].vertices.Add(v20);
+			polygons[3].vertices.Add(v21);
 
+			parallelConstraints.Add(new Parallel(v1, v2, v3, v4, this));
 			parallelConstraints.Add(new Parallel(v4, v1, v2, v3, this));
 			parallelConstraints.Add(new Parallel(v9, v8, v6, v5, this));
-			parallelConstraints.Add(new Parallel(v11, v13, v14, v17, this));
+			parallelConstraints.Add(new Parallel(v11, v13, v16, v15, this));
 
 			foreach (Parallel parallel in parallelConstraints)
 			{
@@ -104,8 +113,9 @@ namespace Polygon_editor
 				}
 			}
 
-			sameLenghtConstraints.Add(new SameLenght(v6, v7));
-			sameLenghtConstraints.Add(new SameLenght(v15, v16));
+			sameLenghtConstraints.Add(new SameLenght(v17, v18));
+			sameLenghtConstraints.Add(new SameLenght(v18, v19));
+			sameLenghtConstraints.Add(new SameLenght(v21, v14));
 
 			reDraw();
 		}

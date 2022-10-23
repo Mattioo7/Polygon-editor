@@ -69,6 +69,15 @@ namespace Polygon_editor
 
 		private void deletePolygon(MouseEventArgs e)
 		{
+			(int? a, int? b, Polygon? poly) edge = findEdge(e);
+
+			if (edge.poly != null)
+			{
+				deletePolygon(edge.poly);
+				reDraw();
+				return;
+			}
+
 			foreach (Polygon poly in this.polygons)
 			{
 				foreach (Vertex v in poly.vertices)
@@ -112,10 +121,14 @@ namespace Polygon_editor
 		private void moveVertex(MouseEventArgs e)
 		{
 			pressedVertex = findVertex(e);
-			mouseDown = true;
 
-			mousePosition.X = e.X;
-			mousePosition.Y = e.Y;
+			if (pressedVertex != null)
+			{
+				mouseDown = true;
+
+				mousePosition.X = pressedVertex.p.X;
+				mousePosition.Y = pressedVertex.p.Y;
+			}
 		}
 
 		private void deleteVertex(MouseEventArgs e)
@@ -255,7 +268,7 @@ namespace Polygon_editor
 
 			sameLenghtConstraints.Add(new SameLenght(a, b));
 
-			drawConstraintNumberLength(a, b, sameLenghtConstraints.Count, Brushes.Gray);
+			drawConstraintNumberLength(a, b, sameLenghtConstraints.Count, Brushes.Blue);
 			this.pictureBox_workingArea.Refresh();
 		}
 

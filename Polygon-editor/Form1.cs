@@ -23,6 +23,7 @@ namespace Polygon_editor
 		private (int? idxA, int? idxB, Polygon? poly)[] parallelEdges;
 		private Polygon? pressedPolygon;
 		private Point mousePosition;
+		private bool movePolygonMode;
 
 		public Form1()
 		{
@@ -116,7 +117,7 @@ namespace Polygon_editor
 
 		public void pictureBox_workingArea_MouseMove(object sender, MouseEventArgs e)
 		{
-			if (this.radioButton_moveVertex.Checked && mouseDown == true && pressedVertex != null)
+			if (this.radioButton_moveVertex.Checked && mouseDown == true && pressedVertex != null && movePolygonMode == false)
 			{
 				pressedVertex.p.X = e.X;
 				pressedVertex.p.Y = e.Y;
@@ -134,8 +135,14 @@ namespace Polygon_editor
 						{
 							if (constraint is Parallel)
 							{
-								MessageBox.Show("Can't resolve constraints", "error", MessageBoxButtons.OK);
+								/*MessageBox.Show("Can't resolve constraints", "error", MessageBoxButtons.OK);
 								mouseDown = false;
+								return;*/
+
+								/*mousePosition.X = e.X;
+								mousePosition.Y = e.Y;*/
+								pressedPolygon = findPolygonByMouse(e);
+								movePolygonMode = true;
 								return;
 							}
 						}
@@ -187,20 +194,22 @@ namespace Polygon_editor
 
 				reDraw();
 			}
-			else if (this.radioButton_movePolygon.Checked && mouseDown == true && pressedPolygon != null)
+			if ((this.radioButton_movePolygon.Checked && mouseDown == true && pressedPolygon != null) || movePolygonMode == true)
 			{
 				foreach (Vertex v in pressedPolygon.vertices)
 				{
 					v.p.X += e.X - mousePosition.X;
 					v.p.Y += e.Y - mousePosition.Y;
 				}
-				
+
 				mousePosition.X = e.X;
 				mousePosition.Y = e.Y;
 
+				movePolygonMode = false;
+
 				reDraw();
 			}
-			else if (this.radioButton_moveEdge.Checked && mouseDown == true && pressedEdge != (null, null, null))
+			if (this.radioButton_moveEdge.Checked && mouseDown == true && pressedEdge != (null, null, null))
 			{
 				HashSet<Vertex> verticesToMove = fixedLengthVerticesList(pressedEdge.Item1, pressedEdge.Item2);
 
