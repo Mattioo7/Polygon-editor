@@ -13,9 +13,9 @@ namespace Polygon_editor
 			if (!radioButton_addPolygon.Checked && numberOfVerticesInNewPolygon != 0)
 			{
 				deletePolygon(polygons.Last());
-				clearVariables();
-				reDraw();
 			}
+			clearVariables();
+			reDraw();
 		}
 
 		private void radioButton_edgeVertex_CheckedChanged(object sender, EventArgs e)

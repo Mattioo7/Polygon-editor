@@ -31,7 +31,7 @@ namespace Polygon_editor
 					numberOfVerticesInNewPolygon = 0;
 					using (Graphics g = Graphics.FromImage(this.drawArea))
 					{
-						drawLine(polygons.Last().vertices.Last().p, polygons.Last().vertices[0].p, g, Brushes.Black);
+						drawLine(polygons.Last().vertices.Last().p, polygons.Last().vertices[0].p, Color.Black);
 					}
 				}
 				else
@@ -57,7 +57,7 @@ namespace Polygon_editor
 							numberOfVerticesInNewPolygon++;
 							polygons.Last().vertices.Add(new Vertex(new Point(e.X, e.Y)));
 							g.FillEllipse(Brushes.Black, e.X - RADIUS + 2, e.Y - RADIUS + 2, (RADIUS - 2) * 2, (RADIUS - 2) * 2);
-							drawLine(polygons.Last().vertices.Last().p, polygons.Last().vertices[polygons.Last().vertices.Count - 2].p, g, Brushes.Black);
+							drawLine(polygons.Last().vertices.Last().p, polygons.Last().vertices[polygons.Last().vertices.Count - 2].p, Color.Black);
 						}
 					}
 
@@ -278,7 +278,6 @@ namespace Polygon_editor
 
 				if (parallelEdges[0].poly == parallelEdges[1].poly && parallelEdges[0].poly.vertices.Count == 3)
 				{
-					//put error
 					MessageBox.Show("Invalid constraint", "error", MessageBoxButtons.OK);
 
 					parallelEdges[0] = (null, null, null);
@@ -360,7 +359,6 @@ namespace Polygon_editor
 
 			reDraw();
 		}
-
 
 	}
 }

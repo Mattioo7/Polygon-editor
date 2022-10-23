@@ -46,11 +46,11 @@ namespace Polygon_editor
 			}
 		}
 
-		private void drawLine(Point a, Point b, Graphics e, Brush br)
+		private void drawLine(Point a, Point b, Color color)
 		{
 			if (this.radioButton_bresenham.Checked)
 			{
-				drawLineBresenham(a.X, a.Y, b.X, b.Y, e, br);
+				drawLineBresenham(a.X, a.Y, b.X, b.Y, color);
 			}
 			else
 			{
@@ -61,10 +61,8 @@ namespace Polygon_editor
 			}
 		}
 
-		private void drawLineBresenham(int x, int y, int x2, int y2, Graphics e, Brush b)
+		private void drawLineBresenham(int x, int y, int x2, int y2, Color color)
 		{
-			// TODO
-
 			//http://tech-algorithm.com/articles/drawing-line-using-bresenham-algorithm/
 			int w = x2 - x;
 			int h = y2 - y;
@@ -72,38 +70,32 @@ namespace Polygon_editor
 			if (w < 0) dx1 = -1; else if (w > 0) dx1 = 1;
 			if (h < 0) dy1 = -1; else if (h > 0) dy1 = 1;
 			if (w < 0) dx2 = -1; else if (w > 0) dx2 = 1;
-			try
+
+			int longest = Math.Abs(w);
+			int shortest = Math.Abs(h);
+			if (!(longest > shortest))
 			{
-				int longest = Math.Abs(w);
-				int shortest = Math.Abs(h);
-				if (!(longest > shortest))
-				{
-					longest = Math.Abs(h);
-					shortest = Math.Abs(w);
-					if (h < 0) dy2 = -1; else if (h > 0) dy2 = 1;
-					dx2 = 0;
-				}
-				int numerator = longest >> 1;
-				for (int i = 0; i <= longest; i++)
-				{
-					drawPixel(x, y, e, b);
-					numerator += shortest;
-					if (!(numerator < longest))
-					{
-						numerator -= longest;
-						x += dx1;
-						y += dy1;
-					}
-					else
-					{
-						x += dx2;
-						y += dy2;
-					}
-				}
+				longest = Math.Abs(h);
+				shortest = Math.Abs(w);
+				if (h < 0) dy2 = -1; else if (h > 0) dy2 = 1;
+				dx2 = 0;
 			}
-			catch (Exception ex)
+			int numerator = longest >> 1;
+			for (int i = 0; i <= longest; i++)
 			{
-				return;
+				this.drawArea.SetPixel(x, y, color);
+				numerator += shortest;
+				if (!(numerator < longest))
+				{
+					numerator -= longest;
+					x += dx1;
+					y += dy1;
+				}
+				else
+				{
+					x += dx2;
+					y += dy2;
+				}
 			}
 		}
 
@@ -114,23 +106,44 @@ namespace Polygon_editor
 
 		private void reDraw()
 		{
-			foreach (Parallel con in parallelConstraints)
+			/*foreach (Parallel con in parallelConstraints)
 			{
 				if (!con.isValid())
 				{
 					con.fix(1);
 				}
-			}
+			}*/
 
 			using (Graphics g = Graphics.FromImage(this.drawArea))
 			{
 				g.Clear(Color.AliceBlue);
 				foreach (Polygon poly in this.polygons)
 				{
-					for (int i = 0; i < poly.vertices.Count; ++i)
+					if (poly == polygons.Last())
 					{
-						drawLine(poly.vertices[i].p, poly.vertices[(poly.vertices.Count + i - 1) % poly.vertices.Count].p, g, Brushes.Black);
+						if (numberOfVerticesInNewPolygon == 0)
+						{
+							for (int i = 0; i < poly.vertices.Count; ++i)
+							{
+								drawLine(poly.vertices[i].p, poly.vertices[(poly.vertices.Count + i - 1) % poly.vertices.Count].p, Color.Black);
+							}
+						}
+						else
+						{
+							for (int i = 1; i < poly.vertices.Count; ++i)
+							{
+								drawLine(poly.vertices[i].p, poly.vertices[(poly.vertices.Count + i - 1) % poly.vertices.Count].p, Color.Black);
+							}
+						}
 					}
+					else
+					{
+						for (int i = 0; i < poly.vertices.Count; ++i)
+						{
+							drawLine(poly.vertices[i].p, poly.vertices[(poly.vertices.Count + i - 1) % poly.vertices.Count].p, Color.Black);
+						}
+					}
+
 					for (int i = 0; i < poly.vertices.Count; ++i)
 					{
 						g.FillEllipse(Brushes.Black, poly.vertices[i].p.X - RADIUS + 2, poly.vertices[i].p.Y - RADIUS + 2, (RADIUS - 2) * 2, (RADIUS - 2) * 2);

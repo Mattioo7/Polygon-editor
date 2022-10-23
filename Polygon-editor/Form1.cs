@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
+using System.Net;
 using System.Windows.Forms;
 using System.Windows.Forms.VisualStyles;
 
@@ -26,7 +27,8 @@ namespace Polygon_editor
 		public Form1()
 		{
 			InitializeComponent();
-			initializeEnviroment();
+
+			defaultScene();
 		}
 
 		private void pictureBox_workingArea_MouseDown(object sender, MouseEventArgs e)
@@ -71,6 +73,35 @@ namespace Polygon_editor
 			{
 				deleteConstraint(e);
 			}
+
+			/*Vertex? v = findVertex(e);
+
+			foreach (Parallel con in parallelConstraints)
+			{
+				if (!con.isValid())
+				{
+					if (v != null && con.containsVertex(v))
+					{
+						if (v == con.a)
+						{
+							con.fix(1);
+						}
+						else if (v == con.b)
+						{
+							con.fix(2);
+						}
+						else if (v == con.c)
+						{
+							con.fix(3);
+						}
+						else if (v == con.d)
+						{
+							con.fix(4);
+						}
+					}
+					reDraw();
+				}
+			}*/
 		}
 
 		private void pictureBox_workingArea_MouseUp(object sender, MouseEventArgs e)
@@ -91,17 +122,35 @@ namespace Polygon_editor
 				pressedVertex.p.Y = e.Y;
 
 				HashSet<Vertex> verticesToMove = fixedLengthVerticesList(pressedVertex);
+				List<Constraint> constraints = doesVertexHasConstraints(pressedVertex);
+
+				if (verticesToMove.Count > 1)
+				{
+					foreach (Vertex vertex in verticesToMove)
+					{
+						List<Constraint> vertexConstraints = doesVertexHasConstraints(vertex);
+
+						foreach (Constraint constraint in vertexConstraints)
+						{
+							if (constraint is Parallel)
+							{
+								MessageBox.Show("Can't resolve constraints", "error", MessageBoxButtons.OK);
+								mouseDown = false;
+								return;
+							}
+						}
+					}
+				}
 
 				foreach (Vertex vertex in verticesToMove)
 				{
 					vertex.p.X += e.X - mousePosition.X;
 					vertex.p.Y += e.Y - mousePosition.Y;
-				};
+				}
 
 				mousePosition.X = e.X;
 				mousePosition.Y = e.Y;
 
-				List<Constraint> constraints = doesVertexHasConstraints(pressedVertex);
 
 				foreach (Constraint constraint in constraints)
 				{
@@ -125,6 +174,14 @@ namespace Polygon_editor
 						{
 							parallel.fix(4);
 						}
+					}
+				}
+
+				foreach (Parallel con in parallelConstraints)
+				{
+					if (!con.isValid())
+					{
+						con.fix(1);
 					}
 				}
 
@@ -156,7 +213,6 @@ namespace Polygon_editor
 				mousePosition.X = e.X;
 				mousePosition.Y = e.Y;
 
-				// fix constraints?
 				List<Constraint> constraints = doesVertexHasConstraints(pressedEdge.Item1);
 
 				foreach (Constraint constraint in constraints)
@@ -232,11 +288,31 @@ namespace Polygon_editor
 
 		private void pictureBox_workingArea_MouseClick(object sender, MouseEventArgs e)
 		{
+			Vertex? v = findVertex(e);
+			
 			foreach (Parallel con in parallelConstraints)
 			{
 				if (!con.isValid())
 				{
-					con.fix(1);
+					if (v != null && con.containsVertex(v))
+					{
+						if (v == con.a)
+						{
+							con.fix(1);
+						}
+						else if (v == con.b)
+						{
+							con.fix(2);
+						}
+						else if (v == con.c)
+						{
+							con.fix(3);
+						}
+						else if (v == con.d)
+						{
+							con.fix(4);
+						}
+					}
 					reDraw();
 				}
 			}
@@ -246,6 +322,11 @@ namespace Polygon_editor
 		{
 			initializeEnviroment();
 			this.pictureBox_workingArea.Refresh();
+		}
+
+		private void button_defaultScene_Click(object sender, EventArgs e)
+		{
+			defaultScene();
 		}
 	}
 }

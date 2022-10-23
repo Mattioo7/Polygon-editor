@@ -31,6 +31,7 @@
 			this.tableLayoutPanel_main = new System.Windows.Forms.TableLayoutPanel();
 			this.tableLayoutPanel_right = new System.Windows.Forms.TableLayoutPanel();
 			this.groupBox_edit = new System.Windows.Forms.GroupBox();
+			this.button_defaultScene = new System.Windows.Forms.Button();
 			this.radioButton_deleteConstraint = new System.Windows.Forms.RadioButton();
 			this.radioButton_parallel = new System.Windows.Forms.RadioButton();
 			this.button_clear = new System.Windows.Forms.Button();
@@ -85,6 +86,7 @@
 			// 
 			// groupBox_edit
 			// 
+			this.groupBox_edit.Controls.Add(this.button_defaultScene);
 			this.groupBox_edit.Controls.Add(this.radioButton_deleteConstraint);
 			this.groupBox_edit.Controls.Add(this.radioButton_parallel);
 			this.groupBox_edit.Controls.Add(this.button_clear);
@@ -103,6 +105,19 @@
 			this.groupBox_edit.TabIndex = 0;
 			this.groupBox_edit.TabStop = false;
 			this.groupBox_edit.Text = "Edit";
+			// 
+			// button_defaultScene
+			// 
+			this.button_defaultScene.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+			this.button_defaultScene.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
+			this.button_defaultScene.Location = new System.Drawing.Point(6, 317);
+			this.button_defaultScene.Name = "button_defaultScene";
+			this.button_defaultScene.Size = new System.Drawing.Size(176, 62);
+			this.button_defaultScene.TabIndex = 11;
+			this.button_defaultScene.Text = "Default scene";
+			this.button_defaultScene.UseVisualStyleBackColor = true;
+			this.button_defaultScene.Click += new System.EventHandler(this.button_defaultScene_Click);
 			// 
 			// radioButton_deleteConstraint
 			// 
@@ -270,6 +285,7 @@
 			this.radioButton_defaultDrawing.Name = "radioButton_defaultDrawing";
 			this.radioButton_defaultDrawing.Size = new System.Drawing.Size(163, 23);
 			this.radioButton_defaultDrawing.TabIndex = 11;
+			this.radioButton_defaultDrawing.TabStop = true;
 			this.radioButton_defaultDrawing.Text = "Default drawing mode";
 			this.radioButton_defaultDrawing.UseVisualStyleBackColor = true;
 			this.radioButton_defaultDrawing.CheckedChanged += new System.EventHandler(this.radioButton_defaultDrawing_CheckedChanged);
@@ -304,9 +320,9 @@
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.ClientSize = new System.Drawing.Size(984, 561);
 			this.Controls.Add(this.tableLayoutPanel_main);
-			this.MinimumSize = new System.Drawing.Size(600, 500);
+			this.MinimumSize = new System.Drawing.Size(600, 600);
 			this.Name = "Form1";
-			this.Text = "Form1";
+			this.Text = "Polygon editor";
 			this.SizeChanged += new System.EventHandler(this.Form1_SizeChanged);
 			this.tableLayoutPanel_main.ResumeLayout(false);
 			this.tableLayoutPanel_right.ResumeLayout(false);
@@ -339,5 +355,6 @@
 		private RadioButton radioButton_parallel;
 		private RadioButton radioButton_sameLength;
 		private RadioButton radioButton_deleteConstraint;
+		private Button button_defaultScene;
 	}
 }
